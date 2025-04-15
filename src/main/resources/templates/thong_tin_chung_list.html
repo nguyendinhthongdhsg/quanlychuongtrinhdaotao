@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Danh sách thông tin chung</title>
+    <!-- Thêm liên kết tới Bootstrap CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/home.css">
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <nav class="col-md-3 col-lg-2 sidebar">
+            <a href="/"><h5 class="text-center mb-4">📘 Quản lý CTĐT</h5></a>
+            <a sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER')" href="/thong-tin-chung">Thông tin chung</a>
+            <a sec:authorize="hasRole('ROLE_ADMIN')" href="#">Chương trình khung</a>
+            <a sec:authorize="hasRole('ROLE_ADMIN')" href="#">Danh mục học phần</a>
+            <a sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER')" href="#">Đề cương chi tiết</a>
+            <a sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER')" href="#">Kế hoạch dạy học</a>
+            <a sec:authorize="hasRole('ROLE_ADMIN')" href="#">Kế hoạch mở lớp & phân công giảng dạy</a>
+            <a sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER')" href="#">Danh mục giảng viên</a>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="col-md-9 col-lg-10 p-0">
+            <!-- Top navbar -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom px-4">
+                <div class="container-fluid justify-content-end">
+                    <span class="navbar-text me-3">
+                        👤 <strong th:text="${#authentication.name}">user</strong>
+                    </span>
+                    <form th:action="@{/logout}" method="post">
+                        <button type="submit" class="btn btn-outline-danger btn-sm">Đăng xuất</button>
+                    </form>
+                </div>
+            </nav>
+
+            <!-- Page content -->
+            <main class="p-4">
+                <h2 class="mb-4">Danh sách thông tin chung</h2>
+
+                <!-- Table -->
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Tên gọi</th>
+                            <th>Bậc</th>
+                            <th>Loại bằng</th>
+                            <th>Chức năng</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="item : ${dataList}">
+                            <td th:text="${item.id}"></td>
+                            <td th:text="${item.name}"></td>
+                            <td th:text="${item.level}"></td>
+                            <td th:text="${item.degreeType}"></td>
+                            <td>
+                                <a th:href="@{/thong-tin-chung/{id}(id=${item.id})}" class="btn btn-info btn-sm">Xem</a>
+                                <a th:href="@{/thong-tin-chung/edit/{id}(id=${item.id})}" class="btn btn-warning btn-sm">Sửa</a>
+                                <a th:href="@{/thong-tin-chung/delete/{id}(id=${item.id})}"
+                                   class="btn btn-danger btn-sm"
+                                   onclick="return confirm('Are you sure?')">Xóa</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Thêm mới -->
+                <a href="/thong-tin-chung/add" class="btn btn-primary">Thêm mới</a>
+            </main>
+        </div>
+    </div>
+</div>
+
+<!-- Thêm liên kết tới Bootstrap JS (Optional nếu cần dùng các component động) -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý chương trình đào tạo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/home.css">
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <nav class="col-md-3 col-lg-2 sidebar">
+            <a href="/"><h5 class="text-center mb-4">📘 Quản lý CTĐT</h5></a>
+            <a sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER')" href="/thong-tin-chung">Thông tin chung</a>
+            <a sec:authorize="hasRole('ROLE_ADMIN')" href="#">Chương trình khung</a>
+            <a sec:authorize="hasRole('ROLE_ADMIN')" href="#">Danh mục học phần</a>
+            <a sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER')" href="#">Đề cương chi tiết</a>
+            <a sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER')" href="#">Kế hoạch dạy học</a>
+            <a sec:authorize="hasRole('ROLE_ADMIN')" href="#">Kế hoạch mở lớp & phân công giảng dạy</a>
+            <a sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER')" href="#">Danh mục giảng viên</a>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="col-md-9 col-lg-10 p-0">
+            <!-- Top navbar -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom px-4">
+                <div class="container-fluid justify-content-end">
+                    <span class="navbar-text me-3">
+                        👤 <strong th:text="${#authentication.name}">user</strong>
+                    </span>
+                    <form th:action="@{/logout}" method="post">
+                        <button type="submit" class="btn btn-outline-danger btn-sm">Đăng xuất</button>
+                    </form>
+                </div>
+            </nav>
+
+            <!-- Page content -->
+            <main class="p-4">
+                <h2>Xin chào, <span th:text="${#authentication.name}">user</span>!</h2>
+                <p>Chào mừng bạn đến với hệ thống quản lý chương trình đào tạo.</p>
+                <p>Vui lòng chọn một chức năng từ menu bên trái để bắt đầu.</p>
+            </main>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
