@@ -1,11 +1,7 @@
 package com.example.quanlychuongtrinhdaotao.controller;
 
-import com.example.quanlychuongtrinhdaotao.entity.Role;
 import com.example.quanlychuongtrinhdaotao.entity.User;
-import com.example.quanlychuongtrinhdaotao.entity.UserRole;
-import com.example.quanlychuongtrinhdaotao.repository.RoleRepository;
 import com.example.quanlychuongtrinhdaotao.repository.UserRepository;
-import com.example.quanlychuongtrinhdaotao.repository.UserRoleRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -23,12 +19,6 @@ public class AuthController {
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private UserRoleRepository userRoleRepository;
-
-    @Autowired
-    private RoleRepository roleRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;  // Use PasswordEncoder interface, which will use BCryptPasswordEncoder
@@ -62,22 +52,14 @@ public class AuthController {
             return "register";  // Trả về trang đăng ký nếu có lỗi
         }
 
+        user.setVaiTro("giangvien");
+        user.setTrangThai(true);
+
         // Mã hóa mật khẩu trước khi lưu vào cơ sở dữ liệu
-        user.setPassword_hash(passwordEncoder.encode(user.getPassword_hash()));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         // Lưu người dùng mới vào cơ sở dữ liệu
         userRepository.save(user);
-
-        // Lấy đối tượng Role (Giả sử role_id = 2 là Giảng viên)
-        Role teacherRole = roleRepository.findById(2L).orElseThrow(() -> new RuntimeException("Role not found"));
-
-        // Tạo đối tượng UserRole mới và gán role_id = 2
-        UserRole userRole = new UserRole();
-        userRole.setUser(user);
-        userRole.setRole(teacherRole);
-
-        // Lưu UserRole vào bảng user_roles
-        userRoleRepository.save(userRole);
 
         // Thêm thông báo thành công và chuyển hướng đến trang đăng nhập
         model.addAttribute("success", "Đăng ký thành công. Vui lòng đăng nhập.");
@@ -86,9 +68,7 @@ public class AuthController {
 
 
     @GetMapping("/")
-    public String homePage(Principal principal, Model model) {
-        String username = principal.getName();  // Lấy tên người dùng từ đối tượng Principal
-        model.addAttribute("username", username);  // Truyền tên người dùng vào model
-        return "home";  // Trả về trang home.html
+    public String home() {
+        return "home";
     }
 }

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <title>Danh sách chương trình đào tạo</title>
+    <title>Danh sách học phần</title>
     <!-- Thêm liên kết tới Bootstrap CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/home.css">
@@ -36,41 +36,50 @@
 
             <!-- Page content -->
             <main class="p-4">
-                <h2 class="mb-4">Danh sách chương trình đào tạo</h2>
-
-                <!-- Table -->
+                <h2 class="mb-4">Danh sách học phần</h2>
+                <!-- Form tìm kiếm -->
+                <form action="/hoc-phan/search" method="get" class="mb-4">
+                    <div class="form-group">
+                        <label for="searchQuery">Tìm kiếm học phần:</label>
+                        <input type="text" id="searchQuery" name="query" class="form-control" placeholder="Nhập mã hoặc tên học phần" />
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-2">Tìm kiếm</button>
+                </form>
                 <div class="table-responsive">
-                    <a th:href="@{/hoc-phan-ctdt/add}" class="btn btn-info btn-sm">Thêm học phần vào chương trình</a>
                     <table class="table table-bordered table-striped">
-                        <thead class="thead-dark">
+                        <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Mã CTĐT</th>
-                            <th>Tên CTĐT</th>
-                            <th>Ngành</th>
-                            <th>Chức năng</th>
+                            <th>Mã học phần</th>
+                            <th>Tên học phần</th>
+                            <th>Số tín chỉ</th>
+                            <th>Số tiết lý thuyết</th>
+                            <th>Số tiết thực hành</th>
+                            <th>Số tiết thực tập</th>
+                            <th>Hệ số</th>
+                            <th>Thao tác</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="item : ${dataList}">
-                            <td th:text="${item.id}"></td>
-                            <td th:text="${item.maCtdt}"></td>
-                            <td th:text="${item.tenCtdt}"></td>
-                            <td th:text="${item.nganh}"></td>
+                        <tr th:each="hp : ${hocPhanList}">
+                            <td th:text="${hp.id}"></td>
+                            <td th:text="${hp.maHp}"></td>
+                            <td th:text="${hp.tenHp}"></td>
+                            <td th:text="${hp.soTinChi}"></td>
+                            <td th:text="${hp.soTietLyThuyet}"></td>
+                            <td th:text="${hp.soTietThucHanh}"></td>
+                            <td th:text="${hp.soTietThucTap}"></td>
+                            <td th:text="${hp.heSo}"></td>
                             <td>
-                                <a th:href="@{/thong-tin-chung/{id}(id=${item.id})}" class="btn btn-info btn-sm">Xem</a>
-                                <a th:href="@{/thong-tin-chung/edit/{id}(id=${item.id})}" class="btn btn-warning btn-sm">Sửa</a>
-                                <a th:href="@{/thong-tin-chung/delete/{id}(id=${item.id})}"
-                                   class="btn btn-danger btn-sm"
-                                   onclick="return confirm('Are you sure?')">Xóa</a>
+                                <a th:href="@{/hoc-phan/edit/{id}(id=${hp.id})}" class="btn btn-warning btn-sm">Sửa</a>
+                                <a th:href="@{/hoc-phan/delete/{id}(id=${hp.id})}" class="btn btn-danger btn-sm"
+                                   onclick="return confirm('Bạn chắc chắn muốn xóa?')">Xóa</a>
                             </td>
                         </tr>
                         </tbody>
                     </table>
+                    <a href="/hoc-phan/add" class="btn btn-primary">Thêm học phần</a>
                 </div>
-
-                <!-- Thêm mới -->
-                <a href="/thong-tin-chung/add" class="btn btn-primary">Thêm mới</a>
             </main>
         </div>
     </div>

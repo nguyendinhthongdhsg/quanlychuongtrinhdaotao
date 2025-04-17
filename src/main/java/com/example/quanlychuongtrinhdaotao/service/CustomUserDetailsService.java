@@ -19,18 +19,18 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        // Tìm người dùng theo tên đăng nhập
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        // Lấy danh sách quyền từ userRoles
-        List<SimpleGrantedAuthority> authorities = user.getUserRoles().stream()
-                .map(userRole -> new SimpleGrantedAuthority(userRole.getRole().getRoleName()))
-                .toList();
+        // Lấy danh sách quyền từ vai trò (ví dụ: admin, truongkhoa, giangvien)
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + user.getVaiTro());
 
+        // Trả về đối tượng UserDetails chứa tên đăng nhập, mật khẩu và quyền
         return new org.springframework.security.core.userdetails.User(
                 user.getUsername(),
-                user.getPassword_hash(),
-                authorities
+                user.getPassword(),
+                List.of(authority)  // Quyền của người dùng
         );
     }
 }

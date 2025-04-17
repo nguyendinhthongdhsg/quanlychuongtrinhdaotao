@@ -11,14 +11,13 @@
     <div class="row">
         <!-- Sidebar -->
         <nav class="col-md-3 col-lg-2 sidebar">
-            <a href="/"><h5 class="text-center mb-4">📘 Quản lý CTĐT</h5></a>
-            <a sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER')" href="/thong-tin-chung">Thông tin chung</a>
-            <a sec:authorize="hasRole('ROLE_ADMIN')" href="#">Chương trình khung</a>
-            <a sec:authorize="hasRole('ROLE_ADMIN')" href="#">Danh mục học phần</a>
-            <a sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER')" href="#">Đề cương chi tiết</a>
-            <a sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER')" href="#">Kế hoạch dạy học</a>
-            <a sec:authorize="hasRole('ROLE_ADMIN')" href="#">Kế hoạch mở lớp & phân công giảng dạy</a>
-            <a sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER')" href="#">Danh mục giảng viên</a>
+            <a href="/" class="text-center mb-4"><h5>📘 Quản lý CTĐT</h5></a>
+            <a sec:authorize="hasRole('ROLE_admin') or hasRole('ROLE_truongkhoa') or hasRole('ROLE_giangvien')" href="/thong-tin-chung">Chương trình đào tạo</a>
+            <a sec:authorize="hasRole('ROLE_admin') or hasRole('ROLE_truongkhoa') or hasRole('ROLE_giangvien')" href="/hoc-phan">Học phần</a>
+            <a sec:authorize="hasRole('ROLE_admin') or hasRole('ROLE_truongkhoa') or hasRole('ROLE_giangvien')" href="/de-cuong-chi-tiet">Đề cương</a>
+            <a sec:authorize="hasRole('ROLE_admin') or hasRole('ROLE_truongkhoa') or hasRole('ROLE_giangvien')" href="#">Kế hoạch dạy học</a>
+            <a sec:authorize="hasRole('ROLE_admin') or hasRole('ROLE_truongkhoa') or hasRole('ROLE_giangvien')" href="#">Kế hoạch mở lớp & phân công giảng dạy</a>
+            <a sec:authorize="hasRole('ROLE_admin') or hasRole('ROLE_truongkhoa') or hasRole('ROLE_giangvien')" href="#">Danh mục giảng viên</a>
         </nav>
 
         <!-- Main Content -->
@@ -37,68 +36,119 @@
 
             <!-- Page content -->
             <main class="p-4">
-                <h2 class="mb-4">Chi tiết thông tin chung</h2>
+                <h2 class="mb-4">Chi tiết chương trình đào tạo</h2>
 
                 <div class="container mt-4">
-                    <h3 th:text="'1. Giới thiệu ' + ${data.name}"></h3>
-                    <p th:text="${data.description}"></p>
+                    <h3 th:text="'1. Giới thiệu ' + ${ThongTinChung.tenCtdt}"></h3>
+                    <p th:text="${ThongTinChung.getGioiThieu()}"></p>
 
-                    <h3 class="mt-4" th:text="'2. Thông tin chung về ' + ${data.name}"></h3>
-                    <p><strong th:text="'Bảng 1. Thông tin chung về ' + ${data.name}"></strong></p>
+                    <h3 class="mt-4" th:text="'2. Thông tin chung về ' + ${ThongTinChung.tenCtdt}"></h3>
+                    <p><strong th:text="'Bảng 1. Thông tin chung về ' + ${ThongTinChung.tenCtdt}"></strong></p>
                     <table class="table table-bordered">
                         <tbody>
                         <tr>
                             <td>1</td>
                             <td>Tên gọi</td>
-                            <td th:text="'Chương trình đào tạo ngành ' + ${data.name}"></td>
+                            <td th:text="${ThongTinChung.tenCtdt}"></td>
                         </tr>
                         <tr>
                             <td>2</td>
-                            <td>Bậc</td>
-                            <td th:text="${data.level}"></td>
+                            <td>Ngành</td>
+                            <td th:text="${ThongTinChung.nganh}"></td>
                         </tr>
                         <tr>
                             <td>3</td>
-                            <td>Loại bằng</td>
-                            <td th:text="${data.degreeType}"></td>
+                            <td>Mã ngành</td>
+                            <td th:text="${ThongTinChung.maNganh}"></td>
                         </tr>
                         <tr>
                             <td>4</td>
-                            <td>Loại hình đào tạo</td>
-                            <td th:text="${data.trainingType}"></td>
+                            <td>Khoa quản lý</td>
+                            <td th:text="${ThongTinChung.khoaQuanLy}"></td>
                         </tr>
                         <tr>
                             <td>5</td>
-                            <td>Thời gian</td>
-                            <td th:text="${data.duration} + ' năm'"></td>
+                            <td>Hệ đào tạo</td>
+                            <td th:text="${ThongTinChung.heDaoTao}"></td>
                         </tr>
                         <tr>
                             <td>6</td>
-                            <td>Số tín chỉ tối thiểu phải tích lũy</td>
-                            <td>155</td>
+                            <td>Trình độ</td>
+                            <td th:text="${ThongTinChung.trinhDo}"></td>
                         </tr>
                         <tr>
                             <td>7</td>
-                            <td>Khoa quản lý</td>
-                            <td th:text="${data.faculty}"></td>
+                            <td>Tổng tín chỉ</td>
+                            <td th:text="${ThongTinChung.tongTinChi}"></td>
                         </tr>
                         <tr>
                             <td>8</td>
-                            <td>Ngôn ngữ</td>
-                            <td th:text="${data.language}"></td>
+                            <td>Thời gian đào tạo</td>
+                            <td th:text="${ThongTinChung.thoiGianDaoTao}"></td>
                         </tr>
                         <tr>
                             <td>9</td>
-                            <td>Website</td>
-                            <td><a th:href="${data.website}" th:text="${data.website}"></a></td>
+                            <td>Năm ban hành</td>
+                            <td th:text="${ThongTinChung.namBanHanh}"></td>
                         </tr>
                         <tr>
                             <td>10</td>
-                            <td>Ban hành</td>
-                            <td th:text="${data.decision}"></td>
+                            <td>Trạng thái</td>
+                            <td th:text="${ThongTinChung.trangThai == 1 ? 'Đang hoạt động' : 'Ngừng hoạt động'}"></td>
                         </tr>
                         </tbody>
                     </table>
+
+                    <h3 class="mt-5">3. Khối lượng học tập và Cấu trúc chương trình đào tạo</h3>
+                    <p><strong>Bảng 2. Các khối kiến thức và số tín chỉ</strong></p>
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>Khối kiến thức</th>
+                            <th>Số TC bắt buộc</th>
+                            <th>Số TC tự chọn</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="k : ${KhungList}">
+                            <td th:text="${k.nhomKienThuc.tenNhom}"></td>
+                            <td th:text="${k.soTinChiBatBuocToiThieu}"></td>
+                            <td th:text="${k.soTinChiTuChonToiThieu}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <h3 class="mt-5">4. Nội dung chương trình dạy học</h3>
+                    <p><strong>Bảng 3. Danh sách học phần</strong></p>
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Mã học phần</th>
+                            <th>Tên học phần</th>
+                            <th>Số TC</th>
+                            <th>Lý thuyết</th>
+                            <th>Thực hành</th>
+                            <th>Thực tập</th>
+                            <th>Hệ số</th>
+                            <th>Bắt buộc</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="hp, iterStat : ${HocPhanList}">
+                            <td th:text="${iterStat.count}"></td>
+                            <td th:text="${hp.hocPhan.maHp}"></td>
+                            <td th:text="${hp.hocPhan.tenHp}"></td>
+                            <td th:text="${hp.hocPhan.soTinChi}"></td>
+                            <td th:text="${hp.hocPhan.soTietLyThuyet}"></td>
+                            <td th:text="${hp.hocPhan.soTietThucHanh}"></td>
+                            <td th:text="${hp.hocPhan.soTietThucTap}"></td>
+                            <td th:text="${hp.hocPhan.heSo}"></td>
+                            <td th:text="${hp.batBuoc == 1 ? 'Có' : 'Không'}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+
 
                     <a href="/thong-tin-chung" class="btn btn-secondary mt-3">Quay lại</a>
                 </div>
@@ -106,11 +156,5 @@
         </div>
     </div>
 </div>
-
-<!-- Thêm liên kết tới Bootstrap JS (Optional nếu cần dùng các component động) -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
 </body>
 </html>

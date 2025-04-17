@@ -1,107 +1,53 @@
 package com.example.quanlychuongtrinhdaotao.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
+@Data
 @Entity
 @Table(name = "ctdt_user")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, columnDefinition = "BIGINT UNSIGNED")
-    private Long id;
+    @Column(name = "id", nullable = false, columnDefinition = "INT UNSIGNED")
+    private int id;
 
-    @Column(name = "username", nullable = false, unique = true, length = 50)
+    @Column(name = "username", nullable = false, length = 50)
     private String username;
 
-    @Column(name = "password_hash", nullable = false, length = 255)
-    private String password_hash;
+    @Column(name = "password", nullable = false, length = 255)
+    private String password;
 
-    @Column(name = "email", nullable = true, columnDefinition = "VARCHAR(255) DEFAULT NULL")
+    @Column(name = "ho_ten", nullable = true, length = 100)
+    private String hoTen;
+
+    @Column(name = "email", nullable = true, length = 100)
     private String email;
 
-    @Column(name = "full_name", nullable = true, columnDefinition = "VARCHAR(255) DEFAULT NULL")
-    private String full_name;
+    @Column(name = "so_dien_thoai", nullable = true, length = 20)
+    private String soDienThoai;
 
-    @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private LocalDateTime created_at;
+    @Column(name = "vai_tro", nullable = true, length = 30)
+    private String vaiTro;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<UserRole> userRoles;
+    @Column(name = "nam_sinh", nullable = true)
+    private Integer namSinh;
 
-    public User() {}
+    @Column(name = "trang_thai", nullable = false)
+    private Boolean trangThai;
 
-    public User(String username, String password_hash, String email, String full_name) {
+    public User() {
+    }
+
+    public User(String username, String password, String hoTen, String email, String soDienThoai, String vaiTro, Integer namSinh, Boolean trangThai) {
         this.username = username;
-        this.password_hash = password_hash;
+        this.password = password;
+        this.hoTen = hoTen;
         this.email = email;
-        this.full_name = full_name;
-    }
-
-    @PrePersist
-    public void prePersist() {
-        if (this.created_at == null) {
-            this.created_at = LocalDateTime.now();
-        }
-    }
-
-    // Getters và Setters
-    public Long getId() {
-        return id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword_hash() {
-        return password_hash;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getFull_name() {
-        return full_name;
-    }
-
-    public LocalDateTime getCreated_at() {
-        return created_at;
-    }
-
-    public List<UserRole> getUserRoles() {
-        return userRoles;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword_hash(String password_hash) {
-        this.password_hash = password_hash;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setFull_name(String full_name) {
-        this.full_name = full_name;
-    }
-
-    public void setCreated_at(LocalDateTime created_at) {
-        this.created_at = created_at;
-    }
-
-    public void setUserRoles(List<UserRole> userRoles) {
-        this.userRoles = userRoles;
+        this.soDienThoai = soDienThoai;
+        this.vaiTro = vaiTro;
+        this.namSinh = namSinh;
+        this.trangThai = trangThai;
     }
 }

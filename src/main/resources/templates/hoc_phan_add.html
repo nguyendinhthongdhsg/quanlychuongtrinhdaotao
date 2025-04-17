@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Thêm học phần</title>
+    <!-- Thêm liên kết tới Bootstrap CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/home.css">
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <nav class="col-md-3 col-lg-2 sidebar">
+            <a href="/" class="text-center mb-4"><h5>📘 Quản lý CTĐT</h5></a>
+            <a sec:authorize="hasRole('ROLE_admin') or hasRole('ROLE_truongkhoa') or hasRole('ROLE_giangvien')" href="/thong-tin-chung">Chương trình đào tạo</a>
+            <a sec:authorize="hasRole('ROLE_admin') or hasRole('ROLE_truongkhoa') or hasRole('ROLE_giangvien')" href="/hoc-phan">Học phần</a>
+            <a sec:authorize="hasRole('ROLE_admin') or hasRole('ROLE_truongkhoa') or hasRole('ROLE_giangvien')" href="/de-cuong-chi-tiet">Đề cương</a>
+            <a sec:authorize="hasRole('ROLE_admin') or hasRole('ROLE_truongkhoa') or hasRole('ROLE_giangvien')" href="#">Kế hoạch dạy học</a>
+            <a sec:authorize="hasRole('ROLE_admin') or hasRole('ROLE_truongkhoa') or hasRole('ROLE_giangvien')" href="#">Kế hoạch mở lớp & phân công giảng dạy</a>
+            <a sec:authorize="hasRole('ROLE_admin') or hasRole('ROLE_truongkhoa') or hasRole('ROLE_giangvien')" href="#">Danh mục giảng viên</a>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="col-md-9 col-lg-10 p-0">
+        <!-- Top navbar -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom px-4">
+            <div class="container-fluid justify-content-end">
+                    <span class="navbar-text me-3">
+                        👤 <strong th:text="${#authentication.name}">user</strong>
+                    </span>
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit" class="btn btn-outline-danger btn-sm">Đăng xuất</button>
+                </form>
+            </div>
+        </nav>
+
+        <!-- Page content -->
+        <main class="p-4">
+            <h2 class="mb-4">Thêm học phần</h2>
+
+            <form th:action="@{/hoc-phan/add}" th:object="${hocPhan}" method="post">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Thông tin học phần</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group mb-3">
+                            <label for="maHp">Mã học phần:</label>
+                            <input id="maHp" type="text" th:field="*{maHp}" class="form-control" required />
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="tenHp">Tên học phần:</label>
+                            <input id="tenHp" type="text" th:field="*{tenHp}" class="form-control" required />
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="soTinChi">Số tín chỉ:</label>
+                            <input id="soTinChi" type="number" th:field="*{soTinChi}" class="form-control" min="0" required />
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="soTietLyThuyet">Số tiết lý thuyết:</label>
+                            <input id="soTietLyThuyet" type="number" th:field="*{soTietLyThuyet}" class="form-control" min="0" />
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="soTietThucHanh">Số tiết thực hành:</label>
+                            <input id="soTietThucHanh" type="number" th:field="*{soTietThucHanh}" class="form-control" min="0" />
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="soTietThucTap">Số tiết thực tập:</label>
+                            <input id="soTietThucTap" type="number" th:field="*{soTietThucTap}" class="form-control" min="0" />
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="hocPhanTienQuyet">Học phần tiên quyết:</label>
+                            <input id="hocPhanTienQuyet" type="text" th:field="*{hocPhanTienQuyet}" class="form-control" />
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="heSo">Hệ số:</label>
+                            <input id="heSo" type="number" step="0.01" min="0" th:field="*{heSo}" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+                <!-- Button actions -->
+                <div class="form-group">
+                <button type="submit" class="btn btn-primary">Lưu</button>
+                <a th:href="@{/hoc-phan}" class="btn btn-secondary">Hủy</a>
+                </div>
+            </form>
+        </main>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

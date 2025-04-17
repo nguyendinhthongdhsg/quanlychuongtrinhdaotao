@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <title>Danh sách chương trình đào tạo</title>
+    <title>Thêm cột điểm</title>
     <!-- Thêm liên kết tới Bootstrap CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/home.css">
@@ -36,41 +36,24 @@
 
             <!-- Page content -->
             <main class="p-4">
-                <h2 class="mb-4">Danh sách chương trình đào tạo</h2>
-
-                <!-- Table -->
-                <div class="table-responsive">
-                    <a th:href="@{/hoc-phan-ctdt/add}" class="btn btn-info btn-sm">Thêm học phần vào chương trình</a>
-                    <table class="table table-bordered table-striped">
-                        <thead class="thead-dark">
-                        <tr>
-                            <th>ID</th>
-                            <th>Mã CTĐT</th>
-                            <th>Tên CTĐT</th>
-                            <th>Ngành</th>
-                            <th>Chức năng</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="item : ${dataList}">
-                            <td th:text="${item.id}"></td>
-                            <td th:text="${item.maCtdt}"></td>
-                            <td th:text="${item.tenCtdt}"></td>
-                            <td th:text="${item.nganh}"></td>
-                            <td>
-                                <a th:href="@{/thong-tin-chung/{id}(id=${item.id})}" class="btn btn-info btn-sm">Xem</a>
-                                <a th:href="@{/thong-tin-chung/edit/{id}(id=${item.id})}" class="btn btn-warning btn-sm">Sửa</a>
-                                <a th:href="@{/thong-tin-chung/delete/{id}(id=${item.id})}"
-                                   class="btn btn-danger btn-sm"
-                                   onclick="return confirm('Are you sure?')">Xóa</a>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+                <div class="container mt-5">
+                    <h2 th:text="@{'Thêm Cột Điểm cho Đề Cương ' + ${deCuongChiTiet.hocPhan.tenHp}}"></h2>
+                    <form th:action="@{/de-cuong-chi-tiet/add-cot-diem/{deCuongId}(deCuongId=${deCuongChiTiet.id})}" method="post">
+                        <div class="mb-3">
+                            <label for="tenCotDiem" class="form-label">Tên Cột Điểm</label>
+                            <input type="text" id="tenCotDiem" name="tenCotDiem" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="tyLePhanTram" class="form-label">Tỷ Lệ Phần Trăm</label>
+                            <input type="number" id="tyLePhanTram" name="tyLePhanTram" class="form-control" step="0.1" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="hinhThuc" class="form-label">Hình Thức</label>
+                            <input type="text" id="hinhThuc" name="hinhThuc" class="form-control" >
+                        </div>
+                        <button type="submit" class="btn btn-primary">Thêm Cột Điểm</button>
+                    </form>
                 </div>
-
-                <!-- Thêm mới -->
-                <a href="/thong-tin-chung/add" class="btn btn-primary">Thêm mới</a>
             </main>
         </div>
     </div>

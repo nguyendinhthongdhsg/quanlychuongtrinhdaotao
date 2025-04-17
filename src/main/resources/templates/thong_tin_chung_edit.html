@@ -10,15 +10,14 @@
 <div class="container-fluid">
     <div class="row">
         <!-- Sidebar -->
-        <nav class="col-md-3 col-lg-2 sidebar">
-            <a href="/"><h5 class="text-center mb-4">📘 Quản lý CTĐT</h5></a>
-            <a sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER')" href="/thong-tin-chung">Thông tin chung</a>
-            <a sec:authorize="hasRole('ROLE_ADMIN')" href="#">Chương trình khung</a>
-            <a sec:authorize="hasRole('ROLE_ADMIN')" href="#">Danh mục học phần</a>
-            <a sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER')" href="#">Đề cương chi tiết</a>
-            <a sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER')" href="#">Kế hoạch dạy học</a>
-            <a sec:authorize="hasRole('ROLE_ADMIN')" href="#">Kế hoạch mở lớp & phân công giảng dạy</a>
-            <a sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER')" href="#">Danh mục giảng viên</a>
+        <nav class="col-md-3 col-lg-2 sidebar h-unset">
+            <a href="/" class="text-center mb-4"><h5>📘 Quản lý CTĐT</h5></a>
+            <a sec:authorize="hasRole('ROLE_admin') or hasRole('ROLE_truongkhoa') or hasRole('ROLE_giangvien')" href="/thong-tin-chung">Chương trình đào tạo</a>
+            <a sec:authorize="hasRole('ROLE_admin') or hasRole('ROLE_truongkhoa') or hasRole('ROLE_giangvien')" href="/hoc-phan">Học phần</a>
+            <a sec:authorize="hasRole('ROLE_admin') or hasRole('ROLE_truongkhoa') or hasRole('ROLE_giangvien')" href="/de-cuong-chi-tiet">Đề cương</a>
+            <a sec:authorize="hasRole('ROLE_admin') or hasRole('ROLE_truongkhoa') or hasRole('ROLE_giangvien')" href="#">Kế hoạch dạy học</a>
+            <a sec:authorize="hasRole('ROLE_admin') or hasRole('ROLE_truongkhoa') or hasRole('ROLE_giangvien')" href="#">Kế hoạch mở lớp & phân công giảng dạy</a>
+            <a sec:authorize="hasRole('ROLE_admin') or hasRole('ROLE_truongkhoa') or hasRole('ROLE_giangvien')" href="#">Danh mục giảng viên</a>
         </nav>
 
         <!-- Main Content -->
@@ -37,62 +36,113 @@
 
             <!-- Page content -->
             <main class="p-4">
-                <h2 class="mb-4">Sửa thông tin chung</h2>
+                <h2 class="mb-4">Sửa thông tin chương trình đào tạo</h2>
 
-                <form th:action="@{/thong-tin-chung/edit/{id}(id=${ctdtThongTinChung.id})}" method="post">
-                    <div class="form-group">
-                        <label for="name">Tên gọi:</label>
-                        <input type="text" id="name" name="name" th:value="${ctdtThongTinChung.name}" class="form-control" required />
-                    </div>
-                    <div class="form-group">
-                        <label for="level">Bậc:</label>
-                        <input type="text" id="level" name="level" th:value="${ctdtThongTinChung.level}" class="form-control" required />
-                    </div>
-                    <div class="form-group">
-                        <label for="degreeType">Loại bằng:</label>
-                        <input type="text" id="degreeType" name="degreeType" th:value="${ctdtThongTinChung.degreeType}" class="form-control" required />
-                    </div>
-                    <div class="form-group">
-                        <label for="trainingType">Loại hình đào tạo:</label>
-                        <input type="text" id="trainingType" name="trainingType" th:value="${ctdtThongTinChung.trainingType}" class="form-control" />
-                    </div>
-                    <div class="form-group">
-                        <label for="duration">Thời gian (năm):</label>
-                        <input type="number" step="0.5" id="duration" name="duration" th:value="${ctdtThongTinChung.duration}" class="form-control" />
-                    </div>
-                    <div class="form-group">
-                        <label for="faculty">Khoa quản lý:</label>
-                        <input type="text" id="faculty" name="faculty" th:value="${ctdtThongTinChung.faculty}" class="form-control" />
-                    </div>
-                    <div class="form-group">
-                        <label for="language">Ngôn ngữ:</label>
-                        <input type="text" id="language" name="language" th:value="${ctdtThongTinChung.language}" class="form-control" />
-                    </div>
-                    <div class="form-group">
-                        <label for="website">Website:</label>
-                        <input type="text" id="website" name="website" th:value="${ctdtThongTinChung.website}" class="form-control" />
-                    </div>
-                    <div class="form-group">
-                        <label for="decision">Ban hành:</label>
-                        <input type="text" id="decision" name="decision" th:value="${ctdtThongTinChung.decision}" class="form-control" />
-                    </div>
-                    <div class="form-group">
-                        <label for="description">Description:</label>
-                        <textarea id="description" name="description" th:text="${ctdtThongTinChung.description}" class="form-control" rows="4"></textarea>
+                <form th:action="@{/thong-tin-chung/edit/{id}(id=${ThongTinChung.id})}"
+                      method="post" th:object="${ThongTinChung}" class="needs-validation">
+
+                    <!-- Thông tin cơ bản -->
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">Thông tin cơ bản</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="maCtdt" class="form-label">Mã chương trình đào tạo</label>
+                                <input type="text" id="maCtdt" th:field="*{maCtdt}" class="form-control" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="tenCtdt" class="form-label">Tên chương trình đào tạo</label>
+                                <input type="text" id="tenCtdt" th:field="*{tenCtdt}" class="form-control" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="nganh" class="form-label">Ngành</label>
+                                <input type="text" id="nganh" th:field="*{nganh}" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label for="maNganh" class="form-label">Mã ngành</label>
+                                <input type="text" id="maNganh" th:field="*{maNganh}" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label for="khoaQuanLy" class="form-label">Khoa quản lý</label>
+                                <input type="text" id="khoaQuanLy" th:field="*{khoaQuanLy}" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label for="heDaoTao" class="form-label">Hệ đào tạo</label>
+                                <input type="text" id="heDaoTao" th:field="*{heDaoTao}" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label for="trinhDo" class="form-label">Trình độ</label>
+                                <input type="text" id="trinhDo" th:field="*{trinhDo}" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label for="tongTinChi" class="form-label">Tổng tín chỉ</label>
+                                <input type="number" id="tongTinChi" th:field="*{tongTinChi}" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label for="thoiGianDaoTao" class="form-label">Thời gian đào tạo</label>
+                                <input type="text" id="thoiGianDaoTao" th:field="*{thoiGianDaoTao}" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label for="namBanHanh" class="form-label">Năm ban hành</label>
+                                <input type="number" id="namBanHanh" th:field="*{namBanHanh}" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label for="trangThai" class="form-label">Trạng thái</label>
+                                <select id="trangThai" th:field="*{trangThai}" class="form-select">
+                                    <option value="1">Kích hoạt</option>
+                                    <option value="0">Ngừng hoạt động</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="gioiThieu" class="form-label">Giới thiệu</label>
+                                <textarea id="gioiThieu" th:field="*{gioiThieu}" class="form-control" rows="4"></textarea>
+                            </div>
+                        </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary mt-2">Lưu</button>
-                    <a href="/thong-tin-chung" class="btn btn-secondary mt-2">Hủy</a>
+
+
+                    <!-- Tín chỉ cho từng nhóm -->
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-3">Tín chỉ cho từng nhóm</h5>
+                        </div>
+                        <div class="card-body">
+                            <div th:each="khung, iterStat : *{khungChuongTrinhList}" class="mb-4 border rounded p-3 shadow-sm">
+                                <div class="form-group">
+                                    <label class="form-label fw-bold" th:text="${khung.nhomKienThuc.tenNhom}">Tên nhóm</label>
+                                    <input type="hidden" th:field="*{khungChuongTrinhList[__${iterStat.index}__].nhomKienThuc.id}" />
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Số tín chỉ bắt buộc tối thiểu</label>
+                                        <input type="number" min="0" class="form-control"
+                                               th:field="*{khungChuongTrinhList[__${iterStat.index}__].soTinChiBatBuocToiThieu}"
+                                               placeholder="Nhập số tín chỉ bắt buộc" />
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Số tín chỉ tự chọn tối thiểu</label>
+                                        <input type="number" min="0" class="form-control"
+                                               th:field="*{khungChuongTrinhList[__${iterStat.index}__].soTinChiTuChonToiThieu}"
+                                               placeholder="Nhập số tín chỉ tự chọn" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Nút submit -->
+                    <div class="d-flex justify-content-start">
+                        <button type="submit" class="btn btn-primary">Lưu</button>
+                        <a href="/thong-tin-chung" class="btn btn-secondary ms-2">Hủy</a>
+                    </div>
                 </form>
             </main>
         </div>
     </div>
 </div>
-
-<!-- Thêm liên kết tới Bootstrap JS (Optional nếu cần dùng các component động) -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 </body>
 </html>

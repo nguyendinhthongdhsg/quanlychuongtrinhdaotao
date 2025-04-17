@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <title>Danh sách chương trình đào tạo</title>
+    <title>Thêm cột điểm</title>
     <!-- Thêm liên kết tới Bootstrap CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/home.css">
@@ -36,41 +36,42 @@
 
             <!-- Page content -->
             <main class="p-4">
-                <h2 class="mb-4">Danh sách chương trình đào tạo</h2>
+                <div class="container mt-5">
+                    <h2>Thêm học phần vào chương trình đào tạo</h2>
+                    <form th:action="@{/hoc-phan-ctdt/add}" th:object="${hocPhanChuongTrinh}" method="post">
+                        <div class="mb-3">
+                            <label>Học phần</label>
+                            <select th:field="*{hocPhan}" class="form-control" required>
+                                <option th:each="hp : ${dsHocPhan}" th:value="${hp.id}" th:text="${hp.tenHp}"></option>
+                            </select>
+                        </div>
 
-                <!-- Table -->
-                <div class="table-responsive">
-                    <a th:href="@{/hoc-phan-ctdt/add}" class="btn btn-info btn-sm">Thêm học phần vào chương trình</a>
-                    <table class="table table-bordered table-striped">
-                        <thead class="thead-dark">
-                        <tr>
-                            <th>ID</th>
-                            <th>Mã CTĐT</th>
-                            <th>Tên CTĐT</th>
-                            <th>Ngành</th>
-                            <th>Chức năng</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="item : ${dataList}">
-                            <td th:text="${item.id}"></td>
-                            <td th:text="${item.maCtdt}"></td>
-                            <td th:text="${item.tenCtdt}"></td>
-                            <td th:text="${item.nganh}"></td>
-                            <td>
-                                <a th:href="@{/thong-tin-chung/{id}(id=${item.id})}" class="btn btn-info btn-sm">Xem</a>
-                                <a th:href="@{/thong-tin-chung/edit/{id}(id=${item.id})}" class="btn btn-warning btn-sm">Sửa</a>
-                                <a th:href="@{/thong-tin-chung/delete/{id}(id=${item.id})}"
-                                   class="btn btn-danger btn-sm"
-                                   onclick="return confirm('Are you sure?')">Xóa</a>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+                        <div class="mb-3">
+                            <label>Chương trình đào tạo</label>
+                            <select th:field="*{thongTinChung}" class="form-control" required>
+                                <option th:each="ctdt : ${dsCTDT}" th:value="${ctdt.id}" th:text="${ctdt.tenCtdt}"></option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Khung chương trình</label>
+                            <select th:field="*{khungChuongTrinh}" class="form-control" required>
+                                <option th:each="kh : ${dsKhung}" th:value="${kh.id}" th:text="${kh.nhomKienThuc.tenNhom}"></option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Loại học phần</label>
+                            <select th:field="*{batBuoc}" class="form-control">
+                                <option value="1">Bắt buộc</option>
+                                <option value="0">Tự chọn</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Lưu</button>
+                        <a href="/thong-tin-chung" class="btn btn-secondary">Hủy</a>
+                    </form>
                 </div>
-
-                <!-- Thêm mới -->
-                <a href="/thong-tin-chung/add" class="btn btn-primary">Thêm mới</a>
             </main>
         </div>
     </div>
