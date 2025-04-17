@@ -28,6 +28,9 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login", "/register").permitAll()
+                        .requestMatchers("/api/giangvien").hasRole("admin")
+                        .requestMatchers("/giangvien").hasAnyRole("admin", "giangvien")
+                        .requestMatchers("/giangvien/add", "/giangvien/update", "/giangvien/delete/**").hasRole("admin")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh mục giảng viên</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/giangvien.css">
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <nav class="col-md-3 col-lg-2 sidebar">
+            <a href="/" class="text-center mb-4"><h5>📘 Quản lý CTĐT</h5></a>
+            <a sec:authorize="hasRole('ROLE_admin') or hasRole('ROLE_truongkhoa') or hasRole('ROLE_giangvien')" href="/thong-tin-chung">Chương trình đào tạo</a>
+            <a sec:authorize="hasRole('ROLE_admin') or hasRole('ROLE_truongkhoa') or hasRole('ROLE_giangvien')" href="/hoc-phan">Học phần</a>
+            <a sec:authorize="hasRole('ROLE_admin') or hasRole('ROLE_truongkhoa') or hasRole('ROLE_giangvien')" href="/de-cuong-chi-tiet">Đề cương</a>
+            <a sec:authorize="hasRole('ROLE_admin') or hasRole('ROLE_truongkhoa') or hasRole('ROLE_giangvien')" href="#">Kế hoạch dạy học</a>
+            <a sec:authorize="hasRole('ROLE_admin') or hasRole('ROLE_truongkhoa') or hasRole('ROLE_giangvien')" href="#">Kế hoạch mở lớp & phân công giảng dạy</a>
+            <a sec:authorize="hasRole('ROLE_admin') or hasRole('ROLE_truongkhoa') or hasRole('ROLE_giangvien')" href="/giangvien">Danh mục giảng viên</a>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="col-md-9 col-lg-10 p-0 main-content">
+            <!-- Top navbar -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom px-4">
+                <div class="container-fluid justify-content-end">
+                    <span class="navbar-text me-3">
+                        👤 <strong th:text="${#authentication.name}">user</strong>
+                    </span>
+                    <form th:action="@{/logout}" method="post">
+                        <button type="submit" class="btn btn-outline-danger btn-sm">Đăng xuất</button>
+                    </form>
+                </div>
+            </nav>
+
+            <!-- Page content -->
+            <main class="p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <h2>Danh mục giảng viên</h2>
+                        <p>Danh sách giảng viên trong hệ thống.</p>
+                    </div>
+                    <a href="/giangvien/add" class="btn btn-success mb-3">➕ Thêm giảng viên</a>
+                </div>
+
+                <!-- Hiển thị thông báo lỗi nếu có -->
+                <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+                    <span th:text="${errorMessage}"></span>
+                </div>
+                <!-- Hiển thị thông báo thành công nếu có -->
+                <div th:if="${successMessage}" class="alert alert-success" role="alert">
+                    <span th:text="${successMessage}"></span>
+                </div>
+
+                <!-- Bảng danh sách giảng viên -->
+                <table class="table table-striped table-bordered">
+                    <thead class="table-dark">
+                    <tr>
+                        <th scope="col">Mã GV</th>
+                        <th scope="col">Họ tên</th>
+                        <th scope="col">Bộ môn</th>
+                        <th scope="col">Khoa</th>
+                        <th scope="col">Trình độ</th>
+                        <th scope="col">Chuyên môn</th>
+                        <th scope="col">Trạng thái</th>
+                        <th scope="col">Username</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Hành động</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="giangVien : ${giangVienList}">
+                        <td th:text="${giangVien.maGV}"></td>
+                        <td th:text="${giangVien.hoTen}"></td>
+                        <td th:text="${giangVien.boMon}"></td>
+                        <td th:text="${giangVien.khoa}"></td>
+                        <td th:text="${giangVien.trinhDo}"></td>
+                        <td th:text="${giangVien.chuyenMon}"></td>
+                        <td th:text="${giangVien.trangThai}"></td>
+                        <td th:text="${giangVien.user != null ? giangVien.user.username : 'N/A'}"></td>
+                        <td th:text="${giangVien.user != null ? giangVien.user.email : 'N/A'}"></td>
+                        <td>
+                            <a th:href="@{'/giangvien/edit/' + ${giangVien.id}}" class="btn btn-edit btn-sm text-white">
+                                <i class="fas fa-edit"></i> Sửa
+                            </a>
+                            <button type="button" class="btn btn-delete btn-sm text-white action-btn"
+                                    th:onclick="'confirmChangeStatus(' + ${giangVien.id} + ')'">
+                                <i class="fas fa-trash-alt"></i> Xóa
+                            </button>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(giangVienList)}">
+                        <td colspan="10" class="text-center">Không có giảng viên nào.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </main>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function confirmChangeStatus(id) {
+        if (confirm("Bạn có chắc muốn thay đổi trạng thái giảng viên này thành 'Không làm việc'?")) {
+            window.location.href = '/giangvien/delete/' + id;
+        }
+    }
+</script>
+</body>
+</html>

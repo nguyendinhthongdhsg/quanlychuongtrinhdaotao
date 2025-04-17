@@ -1,0 +1,48 @@
+.sidebar {
+    background-color: #f8f9fa;
+    padding: 20px;
+    height: 100vh;
+    position: fixed;
+    width: 250px;
+}
+.sidebar a {
+    display: block;
+    padding: 10px;
+    color: #333;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+.sidebar a:hover {
+    background-color: #e9ecef;
+}
+.main-content {
+    margin-left: 250px;
+}
+.action-btn {
+    margin-right: 5px;
+}
+.btn-add {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+.btn-add:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+.btn-edit {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+.btn-edit:hover {
+    background-color: #0056b3;
+    border-color: #004085;
+}
+.btn-delete {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+.btn-delete:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+}
