@@ -47,13 +47,44 @@ public class ThongTinChungController {
 
         // Lấy danh sách khung chương trình
         List<KhungChuongTrinh> khungList = khungChuongTrinhRepository.findByThongTinChung_Id(id);
+        int soTinChiKhoiGiaoDucDaiCuongBatBuoc = 0;
+        int soTinChiKhoiGiaoDucDaiCuongTuChon = 0;
+        int soTinChiKhoiGiaoDucChuyenNghiepBatBuoc = 0;
+        int soTinChiKhoiGiaoDucChuyenNghiepTuChon = 0;
+        int tongSoTinChiBatBuoc = 0;
+        int tongSoTinChiTuChon = 0;
+        int tongSoTinChiTichLuyToiThieu = 0;
+
+        for(KhungChuongTrinh kh : khungList) {
+            if(kh.getNhomKienThuc().getMaNhom().equals("NN") ||
+                    kh.getNhomKienThuc().getMaNhom().equals("LLCT") || kh.getNhomKienThuc().getMaNhom().equals("GDDCK")) {
+                soTinChiKhoiGiaoDucDaiCuongBatBuoc += kh.getSoTinChiBatBuocToiThieu();
+                soTinChiKhoiGiaoDucDaiCuongTuChon += kh.getSoTinChiTuChonToiThieu();
+                tongSoTinChiBatBuoc += kh.getSoTinChiBatBuocToiThieu();
+                tongSoTinChiTuChon += kh.getSoTinChiTuChonToiThieu();
+            } else if(!kh.getNhomKienThuc().getMaNhom().equals("QPAN")) {
+                soTinChiKhoiGiaoDucChuyenNghiepBatBuoc += kh.getSoTinChiBatBuocToiThieu();
+                soTinChiKhoiGiaoDucChuyenNghiepTuChon += kh.getSoTinChiTuChonToiThieu();
+                tongSoTinChiBatBuoc += kh.getSoTinChiBatBuocToiThieu();
+                tongSoTinChiTuChon += kh.getSoTinChiTuChonToiThieu();
+            }
+        }
+
+        tongSoTinChiTichLuyToiThieu = tongSoTinChiBatBuoc + tongSoTinChiTuChon;
 
         // Lấy danh sách học phần trong chương trình
-        List<HocPhan_ChuongTrinh> hocPhanList = hocPhanChuongTrinhRepository.findByThongTinChung_Id(id);
+        List<HocPhan_ChuongTrinh> hocPhanList = hocPhanChuongTrinhRepository.findHocPhan_ChuongTrinhsByThongTinChung_Id(id);
 
         if (data.isPresent()) {
             model.addAttribute("ThongTinChung", data.get());
             model.addAttribute("KhungList", khungList);
+            model.addAttribute("soTinChiKhoiGiaoDucDaiCuongBatBuoc", soTinChiKhoiGiaoDucDaiCuongBatBuoc);
+            model.addAttribute("soTinChiKhoiGiaoDucDaiCuongTuChon", soTinChiKhoiGiaoDucDaiCuongTuChon);
+            model.addAttribute("soTinChiKhoiGiaoDucChuyenNghiepBatBuoc", soTinChiKhoiGiaoDucChuyenNghiepBatBuoc);
+            model.addAttribute("soTinChiKhoiGiaoDucChuyenNghiepTuChon", soTinChiKhoiGiaoDucChuyenNghiepTuChon);
+            model.addAttribute("tongSoTinChiBatBuoc", tongSoTinChiBatBuoc);
+            model.addAttribute("tongSoTinChiTuChon", tongSoTinChiTuChon);
+            model.addAttribute("tongSoTinChiTichLuyToiThieu", tongSoTinChiTichLuyToiThieu);
             model.addAttribute("HocPhanList", hocPhanList);
         }
 
