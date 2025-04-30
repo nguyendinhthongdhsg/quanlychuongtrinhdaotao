@@ -106,10 +106,8 @@ public class HocPhanTrongKeHoachController {
             hocPhan.setSoTietLT(hocPhanExist.getSoTietLyThuyet());
             hocPhan.setSoTietTH(hocPhanExist.getSoTietThucHanh());
             hocPhan.setTongSoTiet(hocPhan.getSoTietLT() + hocPhan.getSoTietTH());
-
             // Lưu đối tượng
             hocPhanService.save(hocPhan);
-
             redirectAttributes.addFlashAttribute("successMessage", "Thêm học phần thành công");
             return "redirect:/ke-hoach-day-hoc/detail/" + hocPhan.getKeHoachDayHoc().getId();
         } catch (Exception e) {
@@ -180,26 +178,6 @@ public class HocPhanTrongKeHoachController {
             return "redirect:/ke-hoach-day-hoc/hoc-phan";
         }
     }
-
-//    @GetMapping("/detail/{keHoachId}")
-//    @PreAuthorize("hasRole('ROLE_admin') or hasRole('ROLE_giangvien')")
-//    public String showDetail(@PathVariable Long keHoachId, Model model) {
-//        try {
-//            var keHoach = keHoachService.getKeHoachById(keHoachId);
-//            var hocPhanList = hocPhanService.getAllByKeHoachId(keHoachId);
-//
-//            if (hocPhanList.isEmpty()) {
-//                model.addAttribute("errorMessage", "Không có học phần trong kế hoạch dạy học này.");
-//            }
-//
-//            model.addAttribute("keHoach", keHoach);
-//            model.addAttribute("hocPhanList", hocPhanList);
-//            return "hocphan_detail";
-//        } catch (Exception e) {
-//            model.addAttribute("errorMessage", "Không thể lấy thông tin chi tiết kế hoạch dạy học: " + e.getMessage());
-//            return "error_page";
-//        }
-//    }
 
     @GetMapping("/detail/{keHoachId}")
     @PreAuthorize("hasRole('ROLE_admin') or hasRole('ROLE_giangvien')")

@@ -86,6 +86,9 @@
                             <a th:href="@{'/ke-hoach-day-hoc/hoc-phan/add/' + ${keHoach.id}}" class="btn btn-sm btn-info">
                                 <i class="fas fa-plus"></i> Thêm học phần
                             </a>
+                            <a th:href="@{'/ke-hoach-day-hoc/xuat-phieu/' + ${keHoach.id}}" class="btn btn-sm btn-secondary" target="_blank">
+                                <i class="fas fa-print"></i> Xuất phiếu
+                            </a>
                         </td>
                     </tr>
                     <tr th:if="${#lists.isEmpty(keHoachList)}">

@@ -40,9 +40,25 @@
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <div>
                         <h2>Danh mục giảng viên</h2>
-                        <p>Danh sách giảng viên trong hệ thống.</p>
+                        <a th:href="@{/giangvien/xuat-phieu}" class="btn btn-primary">Xuất phiếu danh sách</a>
                     </div>
-                    <a href="/giangvien/add" class="btn btn-success mb-3">➕ Thêm giảng viên</a>
+                    <div class="d-flex">
+                        <form th:action="@{/giangvien}" method="get" class="me-2">
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="search"
+                                       th:value="${searchKeyword}" placeholder="Tìm theo mã hoặc tên GV">
+                                <button class="btn btn-outline-secondary" type="submit">
+                                    <i class="fas fa-search"></i> Tìm
+                                </button>
+                                <a th:href="@{/giangvien}" class="btn btn-outline-secondary" th:if="${searchKeyword}">
+                                    <i class="fas fa-sync-alt"></i> Tải lại
+                                </a>
+                            </div>
+                        </form>
+                        <a href="/giangvien/add" class="btn btn-success">
+                            <i class="fas fa-plus"></i> Thêm
+                        </a>
+                    </div>
                 </div>
 
                 <!-- Hiển thị thông báo lỗi nếu có -->

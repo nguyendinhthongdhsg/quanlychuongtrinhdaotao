@@ -28,11 +28,4 @@ public class KeHoachDayHoc {
     @ToString.Exclude
     private List<HocPhanTrongKeHoach> hocPhanTrongKeHoachList;
 
-    // @ManyToOne
-    // @JoinColumn(name = "ctdt_id", referencedColumnName = "id")
-    // private ThongTinChung thongTinChung;
-
-    // @ManyToOne
-    // @JoinColumn(name = "khungchuongtrinh_id", referencedColumnName = "id")
-    // private KhungChuongTrinh khungChuongTrinh;
 }

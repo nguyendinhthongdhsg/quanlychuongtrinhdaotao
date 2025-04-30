@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 public class GiangVienController {
@@ -31,19 +33,6 @@ public class GiangVienController {
     @PreAuthorize("hasRole('ROLE_admin') or hasRole('ROLE_giangvien')")
     public ResponseEntity<List<GiangVien>> getAllGiangVien() {
         return ResponseEntity.ok(giangVienService.getAllGiangVien());
-    }
-
-    @GetMapping("/giangvien")
-    @PreAuthorize("hasRole('ROLE_admin') or hasRole('ROLE_giangvien')")
-    public String showGiangVienList(Model model) {
-        try {
-            List<GiangVien> giangVienList = giangVienService.getAllGiangVien();
-            model.addAttribute("giangVienList", giangVienList);
-        } catch (Exception e) {
-            model.addAttribute("giangVienList", List.of());
-            model.addAttribute("errorMessage", "Không thể lấy danh sách giảng viên: " + e.getMessage());
-        }
-        return "giangvien";
     }
 
     @PostMapping("/giangvien/add")
@@ -148,4 +137,55 @@ public class GiangVienController {
         redirectAttributes.addFlashAttribute("successMessage", "Đã cập nhật trạng thái giảng viên thành 'Không làm việc'");
         return "redirect:/giangvien";
     }
+
+    @GetMapping("/giangvien")
+    @PreAuthorize("hasRole('ROLE_admin') or hasRole('ROLE_giangvien')")
+    public String showGiangVienList(
+            @RequestParam(required = false) String search,
+            Model model
+    ) {
+        try {
+            List<GiangVien> giangVienList;
+            if (search != null && !search.isEmpty()) {
+                giangVienList = giangVienService.searchGiangVien(search);
+            } else {
+                giangVienList = giangVienService.getAllGiangVien();
+            }
+            model.addAttribute("giangVienList", giangVienList);
+            model.addAttribute("searchKeyword", search);
+        } catch (Exception e) {
+            model.addAttribute("giangVienList", List.of());
+            model.addAttribute("errorMessage", "Không thể lấy danh sách giảng viên: " + e.getMessage());
+        }
+        return "giangvien";
+    }
+
+    @GetMapping("/giangvien/xuat-phieu")
+    @PreAuthorize("hasRole('ROLE_admin') or hasRole('ROLE_giangvien')")
+    public String xuatPhieuDanhSachGiangVien(Model model) {
+        try {
+            List<GiangVien> giangVienList = giangVienService.getAllGiangVien();
+            model.addAttribute("giangVienList", giangVienList);
+            // Thống kê tổng thể
+            model.addAttribute("tongGiangVien", giangVienList.size());
+            model.addAttribute("tongGiangVienDangLamViec",
+                    giangVienList.stream().filter(gv -> "Đang làm việc".equals(gv.getTrangThai())).count());
+            model.addAttribute("tongGiangVienNghiViec",
+                    giangVienList.stream().filter(gv -> "Không làm việc".equals(gv.getTrangThai())).count());
+            // Thống kê theo khoa
+            model.addAttribute("getGiangVienByKhoa", (java.util.function.Function<String, List<GiangVien>>)
+                    khoa -> giangVienList.stream()
+                            .filter(gv -> khoa.equals(gv.getKhoa()))
+                            .collect(Collectors.toList()));
+            Map<String, Long> giangVienByKhoa = giangVienList.stream()
+                    .collect(Collectors.groupingBy(GiangVien::getKhoa, Collectors.counting()));
+            model.addAttribute("giangVienByKhoa", giangVienByKhoa);
+            return "giangvien_export";
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "Không thể xuất phiếu danh sách giảng viên: " + e.getMessage());
+            return "redirect:/giangvien";
+        }
+    }
+
+
 }

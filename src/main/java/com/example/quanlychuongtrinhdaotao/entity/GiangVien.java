@@ -37,7 +37,6 @@ public class GiangVien {
     @Column(name = "trang_thai", length = 20)
     private String trangThai;
 
-    // Thêm các trường từ User (transient để không ánh xạ vào cơ sở dữ liệu)
     @Transient
     private String username;
 
@@ -114,7 +113,6 @@ public class GiangVien {
 
     public void setUser(User user) {
         this.user = user;
-        // Cập nhật lại username và email khi setUser
         if (user != null) {
             this.username = user.getUsername();
             this.email = user.getEmail();

@@ -36,4 +36,9 @@ public class GiangVienService {
         return giangVienRepository.save(giangVien);
     }
 
+    // search
+    public List<GiangVien> searchGiangVien(String keyword) {
+        return giangVienRepository.searchGiangVien(keyword);
+    }
+
 }

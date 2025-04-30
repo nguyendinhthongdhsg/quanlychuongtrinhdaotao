@@ -1,3 +1,4 @@
+
 package com.example.quanlychuongtrinhdaotao.controller;
 
 import com.example.quanlychuongtrinhdaotao.entity.KeHoachDayHoc;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/ke-hoach-day-hoc")
@@ -63,6 +65,7 @@ public class KeHoachDayHocController {
             return "redirect:/ke-hoach-day-hoc";
         }
     }
+
     @GetMapping("/detail/{id}")
     public String showDetail(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
         try {
@@ -75,6 +78,7 @@ public class KeHoachDayHocController {
             return "redirect:/ke-hoach-day-hoc";
         }
     }
+
     // Xử lý cập nhật kế hoạch
     @PostMapping("/edit/{id}")
     public String update(@PathVariable Long id, @ModelAttribute KeHoachDayHoc keHoach, RedirectAttributes redirectAttributes) {
@@ -98,5 +102,33 @@ public class KeHoachDayHocController {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         }
         return "redirect:/ke-hoach-day-hoc";
+    }
+
+    // Xuất phiếu kế hoạch dạy học
+    @GetMapping("/xuat-phieu/{id}")
+    public String xuatPhieuKeHoach(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
+        try {
+            KeHoachDayHoc keHoach = keHoachDayHocService.getKeHoachDetailForExport(id);
+            model.addAttribute("keHoach", keHoach);
+            model.addAttribute("hocPhanList", keHoach.getHocPhanTrongKeHoachList());
+
+            // Thống kê tổng thể
+            model.addAttribute("tongHocPhan", keHoach.getHocPhanTrongKeHoachList().size());
+            model.addAttribute("tongGiangVien", keHoachDayHocService.countTotalGiangVienInKeHoach(keHoach));
+            model.addAttribute("tongTietGiangDay", keHoachDayHocService.calculateTotalTeachingHours(keHoach));
+
+            // Thống kê theo khoa
+            model.addAttribute("getHocPhanByKhoa", (java.util.function.Function<String, List>)
+                    khoa -> keHoachDayHocService.getHocPhanListByKhoa(keHoach, khoa));
+            model.addAttribute("getTietGiangDayByKhoa", (java.util.function.Function<String, Integer>)
+                    khoa -> keHoachDayHocService.calculateTotalTeachingHoursByKhoa(keHoach, khoa));
+            model.addAttribute("getGiangVienCountByKhoa", (java.util.function.Function<String, Integer>)
+                    khoa -> keHoachDayHocService.countGiangVienByKhoa(keHoach, khoa));
+
+            return "kehoach_export";
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/ke-hoach-day-hoc";
+        }
     }
 }
