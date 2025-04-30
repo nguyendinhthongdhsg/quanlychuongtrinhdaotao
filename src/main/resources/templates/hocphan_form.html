@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${hocPhan.id != null} ? 'Chỉnh sửa học phần trong kế hoạch' : 'Thêm học phần vào kế hoạch'"></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-4">
+    <h2 th:text="${hocPhan.id != null} ? 'Chỉnh sửa học phần trong kế hoạch' : 'Thêm học phần vào kế hoạch'"></h2>
+    <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+        <span th:text="${errorMessage}"></span>
+    </div>
+    <form th:action="${hocPhan.id != null} ? @{'/ke-hoach-day-hoc/hoc-phan/update'} : @{'/ke-hoach-day-hoc/hoc-phan/save'}" th:object="${hocPhan}" method="post">
+        <!-- Trường ẩn để lưu keHoachId -->
+        <input type="hidden" th:field="*{keHoachDayHoc.id}" />
+        <input type="hidden" th:field="*{id}" />
+
+
+        <!-- Dropdown để chọn học phần -->
+        <div class="mb-3">
+            <label for="hocPhanId" class="form-label">Chọn học phần</label>
+            <select class="form-control" id="hocPhanId" th:field="*{hocPhan.id}" required>
+                <option value="">-- Chọn học phần --</option>
+                <option th:each="hp : ${hocPhanList}"
+                        th:value="${hp.id}"
+                        th:text="${hp.maHp} + ' - ' + ${hp.tenHp}"
+                        th:selected="${hocPhan.hocPhan != null and hocPhan.hocPhan.id == hp.id}">
+                </option>
+            </select>
+            <div th:if="${#fields.hasErrors('hocPhan.id')}" class="text-danger">
+                <span th:errors="*{hocPhan.id}"></span>
+            </div>
+        </div>
+
+        <!-- Các trường khác để người dùng nhập -->
+        <div class="mb-3">
+            <label for="soNhom" class="form-label">Số nhóm</label>
+            <input type="number" class="form-control" id="soNhom" th:field="*{soNhom}" required>
+            <div th:if="${#fields.hasErrors('soNhom')}" class="text-danger">
+                <span th:errors="*{soNhom}"></span>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="slsvPerNhom" class="form-label">Số lượng sinh viên mỗi nhóm</label>
+            <input type="number" class="form-control" id="slsvPerNhom" th:field="*{slsvPerNhom}" required>
+            <div th:if="${#fields.hasErrors('slsvPerNhom')}" class="text-danger">
+                <span th:errors="*{slsvPerNhom}"></span>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Lưu</button>
+        <a th:href="@{'/ke-hoach-day-hoc/detail/' + ${keHoachId}}" class="btn btn-secondary">Hủy</a>
+    </form>
+</div>
+</body>
+</html>

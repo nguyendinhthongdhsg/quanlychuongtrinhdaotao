@@ -10,14 +10,14 @@
 <div class="container-fluid">
     <div class="row">
         <!-- Sidebar -->
-        <nav class="col-md-3 col-lg-2 sidebar h-unset">
+        <nav class="col-md-3 col-lg-2 sidebar">
             <a href="/" class="text-center mb-4"><h5>📘 Quản lý CTĐT</h5></a>
             <a sec:authorize="hasRole('ROLE_admin') or hasRole('ROLE_truongkhoa') or hasRole('ROLE_giangvien')" href="/thong-tin-chung">Chương trình đào tạo</a>
             <a sec:authorize="hasRole('ROLE_admin') or hasRole('ROLE_truongkhoa') or hasRole('ROLE_giangvien')" href="/hoc-phan">Học phần</a>
             <a sec:authorize="hasRole('ROLE_admin') or hasRole('ROLE_truongkhoa') or hasRole('ROLE_giangvien')" href="/de-cuong-chi-tiet">Đề cương</a>
-            <a sec:authorize="hasRole('ROLE_admin') or hasRole('ROLE_truongkhoa') or hasRole('ROLE_giangvien')" href="#">Kế hoạch dạy học</a>
-            <a sec:authorize="hasRole('ROLE_admin') or hasRole('ROLE_truongkhoa') or hasRole('ROLE_giangvien')" href="#">Kế hoạch mở lớp & phân công giảng dạy</a>
-            <a sec:authorize="hasRole('ROLE_admin') or hasRole('ROLE_truongkhoa') or hasRole('ROLE_giangvien')" href="#">Danh mục giảng viên</a>
+            <a sec:authorize="hasRole('ROLE_admin') or hasRole('ROLE_truongkhoa') or hasRole('ROLE_giangvien')" href="/ke-hoach-day-hoc">Kế hoạch dạy học</a>
+            <a sec:authorize="hasRole('ROLE_admin') or hasRole('ROLE_truongkhoa') or hasRole('ROLE_giangvien')" href="/ke-hoach-day-hoc/hoc-phan">Kế hoạch mở lớp & phân công giảng dạy</a>
+            <a sec:authorize="hasRole('ROLE_admin') or hasRole('ROLE_truongkhoa') or hasRole('ROLE_giangvien')" href="/giangvien">Danh mục giảng viên</a>
         </nav>
 
         <!-- Main Content -->

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chi Tiết Kế Hoạch Dạy Học</title>
+</head>
+<body>
+<h1>Chi Tiết Kế Hoạch Dạy Học</h1>
+
+<!-- Hiển thị thông tin KeHoachDayHoc -->
+<h2>Thông tin Kế Hoạch Dạy Học</h2>
+<p><strong>Năm học:</strong> ${keHoachDayHoc.namHoc}</p>
+<p><strong>Học kỳ:</strong> ${keHoachDayHoc.hocKy}</p>
+
+<!-- Hiển thị danh sách học phần -->
+<h2>Danh Sách Học Phần</h2>
+<table border="1">
+  <thead>
+  <tr>
+    <th>Mã học phần</th>
+    <th>Tên học phần</th>
+    <th>Khoa</th>
+    <th>Số tín chỉ</th>
+    <th>Số tiết lý thuyết</th>
+    <th>Số tiết bài tập</th>
+    <th>Số tiết thực hành</th>
+    <th>Tổng số tiết</th>
+    <th>Số nhóm</th>
+    <th>SLSV/Nhóm</th>
+    <th>Hành động</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="hocPhan : ${hocPhanList}">
+    <p th:text="${hocPhanList.size()}"></p>
+    <td th:text="${hocPhan.maHocPhan}"></td>
+    <td th:text="${hocPhan.tenHocPhan}"></td>
+    <td th:text="${hocPhan.khoa}"></td>
+    <td th:text="${hocPhan.soTC}"></td>
+    <td th:text="${hocPhan.soTietLT}"></td>
+    <td th:text="${hocPhan.soTietBaiTap}"></td>
+    <td th:text="${hocPhan.soTietThucHanh}"></td>
+    <td th:text="${hocPhan.tongSoTiet}"></td>
+    <td th:text="${hocPhan.soNhom}"></td>
+    <td th:text="${hocPhan.slsvPerGroup}"></td>
+    <td>
+      <a th:href="@{/hocphan/edit/{id}(id=${hocPhan.id})}">Sửa</a> |
+      <a th:href="@{/hocphan/delete/{id}(id=${hocPhan.id})}" onclick="return confirm('Bạn có chắc chắn muốn xóa?');">Xóa</a>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+<!-- Thêm học phần -->
+<a href="/hocphan/add" class="btn btn-primary">Thêm học phần</a>
+
+</body>
+</html>

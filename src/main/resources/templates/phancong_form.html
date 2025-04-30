@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Phân công giảng dạy</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<div class="container mt-4">
+    <h2>Phân công giảng dạy</h2>
+    <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+        <span th:text="${errorMessage}"></span>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="card-title mb-0">Thông tin học phần</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Mã học phần:</strong> <span th:text="${phanCong.hocPhanTrongKeHoach.maHocPhan}"></span></p>
+                    <p><strong>Tên học phần:</strong> <span th:text="${phanCong.hocPhanTrongKeHoach.tenHocPhan}"></span></p>
+                    <p><strong>Số tín chỉ:</strong> <span th:text="${phanCong.hocPhanTrongKeHoach.soTC}"></span></p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Số tiết lý thuyết:</strong> <span th:text="${phanCong.hocPhanTrongKeHoach.soTietLT}"></span></p>
+                    <p><strong>Số tiết thực hành:</strong> <span th:text="${phanCong.hocPhanTrongKeHoach.soTietTH}"></span></p>
+                    <p><strong>Tổng số tiết:</strong> <span th:text="${phanCong.hocPhanTrongKeHoach.tongSoTiet}"></span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <form th:action="@{${phanCong.id == null ? '/ke-hoach-day-hoc/phan-cong/save' : '/ke-hoach-day-hoc/phan-cong/update'}}" method="post" th:object="${phanCong}">
+        <input type="hidden" th:field="*{id}" />
+        <input type="hidden" th:field="*{hocPhanTrongKeHoach}" />
+
+        <div class="mb-3">
+            <label for="giangVien" class="form-label">Giảng viên</label>
+            <select class="form-select" id="giangVien" th:field="*{giangVien}" required>
+                <option value="">-- Chọn giảng viên --</option>
+                <option th:each="gv : ${giangVienList}"
+                        th:if="${gv.trangThai == 'Đang làm việc'}"
+                        th:value="${gv.id}"
+                        th:text="${gv.hoTen + ' - ' + gv.maGV + ' - ' + gv.email}"></option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="nhom" class="form-label">Nhóm</label>
+            <input type="number" class="form-control" id="nhom" th:field="*{nhom}" min="1" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="soTietThucHien" class="form-label">Số tiết thực hiện</label>
+            <input type="number" class="form-control" id="soTietThucHien" th:field="*{soTietThucHien}"
+                   th:max="${phanCong.hocPhanTrongKeHoach.tongSoTiet}" min="1" required>
+            <small class="form-text text-muted">Tối đa <span th:text="${phanCong.hocPhanTrongKeHoach.tongSoTiet}"></span> tiết.</small>
+        </div>
+
+        <div class="mb-3">
+            <button type="submit" class="btn btn-primary">Lưu</button>
+            <a th:href="@{'/ke-hoach-day-hoc/detail/' + ${phanCong.hocPhanTrongKeHoach.keHoachDayHoc.id}}" class="btn btn-secondary">Hủy</a>
+        </div>
+    </form>
+</div>
+</body>
+</html>
