@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Import Giảng Viên từ Excel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/giangvien.css">
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <nav class="col-md-3 col-lg-2 sidebar">
+            <a href="/" class="text-center mb-4"><h5>📘 Quản lý CTĐT</h5></a>
+            <a sec:authorize="hasRole('ROLE_admin') or hasRole('ROLE_truongkhoa') or hasRole('ROLE_giangvien')" href="/thong-tin-chung">Chương trình đào tạo</a>
+            <a sec:authorize="hasRole('ROLE_admin') or hasRole('ROLE_truongkhoa') or hasRole('ROLE_giangvien')" href="/hoc-phan">Học phần</a>
+            <a sec:authorize="hasRole('ROLE_admin') or hasRole('ROLE_truongkhoa') or hasRole('ROLE_giangvien')" href="/de-cuong-chi-tiet">Đề cương</a>
+            <a sec:authorize="hasRole('ROLE_admin') or hasRole('ROLE_truongkhoa') or hasRole('ROLE_giangvien')" href="/ke-hoach-day-hoc">Kế hoạch dạy học</a>
+            <a sec:authorize="hasRole('ROLE_admin') or hasRole('ROLE_truongkhoa') or hasRole('ROLE_giangvien')" href="/thong-ke">Thống kê</a>
+            <a sec:authorize="hasRole('ROLE_admin') or hasRole('ROLE_truongkhoa') or hasRole('ROLE_giangvien')" href="/giangvien">Danh mục giảng viên</a>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="col-md-9 col-lg-10 p-0 main-content">
+            <!-- Top navbar -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom px-4">
+                <div class="container-fluid justify-content-end">
+                    <span class="navbar-text me-3">
+                        👤 <strong th:text="${#authentication.name}">user</strong>
+                    </span>
+                    <form th:action="@{/logout}" method="post">
+                        <button type="submit" class="btn btn-outline-danger btn-sm">Đăng xuất</button>
+                    </form>
+                </div>
+            </nav>
+
+            <!-- Page content -->
+            <main class="p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2>Import Giảng Viên từ Excel</h2>
+                    <a href="/giangvien" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Quay lại
+                    </a>
+                </div>
+
+                <!-- Hiển thị thông báo lỗi nếu có -->
+                <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+                    <span th:text="${errorMessage}"></span>
+                </div>
+                <!-- Hiển thị thông báo thành công nếu có -->
+                <div th:if="${successMessage}" class="alert alert-success" role="alert">
+                    <span th:text="${successMessage}"></span>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="mb-4">
+                            <h5>Hướng dẫn import:</h5>
+                            <ol>
+                                <li>Tải xuống <a th:href="@{/giangvien/excel/download-template}" class="link-primary">File mẫu Excel</a> để đảm bảo định dạng chính xác.</li>
+                                <li>Điền thông tin giảng viên vào file mẫu (các trường có dấu * là bắt buộc).</li>
+                                <li>Upload file và nhấn nút Import để tiến hành nhập dữ liệu.</li>
+                            </ol>
+                        </div>
+
+                        <form th:action="@{/giangvien/excel/import}" method="post" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label for="fileInput" class="form-label">Chọn file Excel:</label>
+                                <input type="file" class="form-control" id="fileInput" name="file" accept=".xlsx, .xls" required>
+                                <div class="form-text">Chỉ chấp nhận file Excel (.xlsx, .xls)</div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-upload"></i> Import
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
