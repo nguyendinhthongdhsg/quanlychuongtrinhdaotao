@@ -36,40 +36,49 @@
 
             <!-- Page content -->
             <main class="p-4">
-                <div class="container mt-5">
-                    <h2>Thêm học phần vào chương trình đào tạo</h2>
-                    <form th:action="@{/hoc-phan-ctdt/add}" th:object="${hocPhanChuongTrinh}" method="post">
+                <div class="table-responsive">
+                    <h2 th:text="'Thêm học phần vào ' + ${CTDT.tenCtdt}"></h2>
+
+                    <form th:action="@{/hoc-phan-ctdt/add/{id}(id=${CTDT.id})}"
+                          th:object="${hocPhanChuongTrinh}" method="post">
+
+                        <!-- Học phần -->
                         <div class="mb-3">
-                            <label>Học phần</label>
-                            <select th:field="*{hocPhan}" class="form-control" required>
+                            <label for="hocPhan">Học phần</label>
+                            <select th:field="*{hocPhan}" class="form-control" id="hocPhan" required>
+                                <option disabled selected value="">-- Chọn học phần --</option>
                                 <option th:each="hp : ${dsHocPhan}" th:value="${hp.id}" th:text="${hp.tenHp}"></option>
                             </select>
                         </div>
 
+                        <!-- Gán Thông tin chung như một entity -->
                         <div class="mb-3">
-                            <label>Chương trình đào tạo</label>
-                            <select th:field="*{thongTinChung}" class="form-control" required>
-                                <option th:each="ctdt : ${dsCTDT}" th:value="${ctdt.id}" th:text="${ctdt.tenCtdt}"></option>
+                            <label for="thongTinChung">Chương trình đào tạo</label>
+                            <select th:field="*{thongTinChung}" class="form-control" id="thongTinChung" readonly required>
+                                <option th:value="${CTDT.id}" th:text="${CTDT.tenCtdt}" selected></option>
                             </select>
                         </div>
 
+                        <!-- Khung chương trình -->
                         <div class="mb-3">
-                            <label>Khung chương trình</label>
-                            <select th:field="*{khungChuongTrinh}" class="form-control" required>
+                            <label for="khung">Khung chương trình</label>
+                            <select th:field="*{khungChuongTrinh}" class="form-control" id="khung" required>
+                                <option disabled selected value="">-- Chọn khung chương trình --</option>
                                 <option th:each="kh : ${dsKhung}" th:value="${kh.id}" th:text="${kh.nhomKienThuc.tenNhom}"></option>
                             </select>
                         </div>
 
+                        <!-- Loại học phần -->
                         <div class="mb-3">
-                            <label>Loại học phần</label>
-                            <select th:field="*{batBuoc}" class="form-control">
+                            <label for="loai">Loại học phần</label>
+                            <select th:field="*{batBuoc}" class="form-control" id="loai" required>
                                 <option value="1">Bắt buộc</option>
                                 <option value="0">Tự chọn</option>
                             </select>
                         </div>
 
                         <button type="submit" class="btn btn-primary">Lưu</button>
-                        <a href="/thong-tin-chung" class="btn btn-secondary">Hủy</a>
+                        <a th:href="@{/thong-tin-chung/{id}(id=${CTDT.id})}" class="btn btn-secondary">Hủy</a>
                     </form>
                 </div>
             </main>

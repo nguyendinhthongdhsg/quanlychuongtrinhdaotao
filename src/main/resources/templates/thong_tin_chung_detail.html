@@ -38,7 +38,7 @@
             <main class="p-4">
                 <h2 class="mb-4">Chi tiết chương trình đào tạo</h2>
 
-                <div class="container mt-4">
+                <div class="table-responsive">
                     <h3 th:text="'1. Giới thiệu ' + ${ThongTinChung.tenCtdt}"></h3>
                     <p th:text="${ThongTinChung.getGioiThieu()}"></p>
 
@@ -104,16 +104,49 @@
                     <table class="table table-bordered">
                         <thead>
                         <tr>
-                            <th>Khối kiến thức</th>
-                            <th>Số TC bắt buộc</th>
-                            <th>Số TC tự chọn</th>
+                            <th rowspan="2" colspan="2">Khối kiến thức</th>
+                            <th colspan="2">Số tín chỉ</th>
+                        </tr>
+                        <tr>
+                            <th>Bắt buộc</th>
+                            <th>Tự chọn</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="k : ${KhungList}">
-                            <td th:text="${k.nhomKienThuc.tenNhom}"></td>
-                            <td th:text="${k.soTinChiBatBuocToiThieu}"></td>
-                            <td th:text="${k.soTinChiTuChonToiThieu}"></td>
+                        <tr>
+                            <td>I</td>
+                            <td>Khối kiến thức giáo dục đại cương</td>
+                            <td th:text="${soTinChiKhoiGiaoDucDaiCuongBatBuoc}"></td>
+                            <td th:text="${soTinChiKhoiGiaoDucDaiCuongTuChon}"></td>
+                        </tr>
+                        <!-- Vòng lặp các khối kiến thức -->
+                        <th:block th:each="k, iterStat : ${KhungList}">
+                            <!-- Chỉ hiển thị dòng 'II...' ở chỉ số mong muốn -->
+                            <tr th:if="${iterStat.index == 4}">
+                                <td>II</td>
+                                <td>Khối kiến thức giáo dục chuyên nghiệp</td>
+                                <td th:text="${soTinChiKhoiGiaoDucChuyenNghiepBatBuoc}"></td>
+                                <td th:text="${soTinChiKhoiGiaoDucChuyenNghiepTuChon}"></td>
+                            </tr>
+
+                            <!-- Dòng nội dung bình thường -->
+                            <tr>
+                                <td></td>
+                                <td th:text="${k.nhomKienThuc.tenNhom}"></td>
+                                <td th:text="${k.soTinChiBatBuocToiThieu}"></td>
+                                <td th:text="${k.soTinChiTuChonToiThieu}"></td>
+                            </tr>
+                        </th:block>
+                        <tr>
+                            <td colspan="2">Tổng</td>
+                            <td th:text="${tongSoTinChiBatBuoc}"></td>
+                            <td th:text="${tongSoTinChiTuChon}"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Số tín chỉ tối thiểu phải tích lũy
+                                (không tính số tín chỉ Giáo dục thể chất và Giáo dục quốc phòng và an ninh)
+                            </td>
+                            <td colspan="2" th:text="${tongSoTinChiTichLuyToiThieu}"></td>
                         </tr>
                         </tbody>
                     </table>
@@ -149,8 +182,8 @@
                         </tbody>
                     </table>
 
-
-                    <a href="/thong-tin-chung" class="btn btn-secondary mt-3">Quay lại</a>
+                    <a th:href="@{/hoc-phan-ctdt/add/{id}(id=${ThongTinChung.id})}" class="btn btn-primary">Thêm học phần vào chương trình</a>
+                    <a href="/thong-tin-chung" class="btn btn-secondary">Quay lại</a>
                 </div>
             </main>
         </div>

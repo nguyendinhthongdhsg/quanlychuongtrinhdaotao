@@ -13,7 +13,7 @@ public class HocPhan_ChuongTrinh {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "hocphan_id", referencedColumnName = "id")
     private HocPhan hocPhan;
 
