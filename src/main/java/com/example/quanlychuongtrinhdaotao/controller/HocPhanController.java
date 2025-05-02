@@ -80,4 +80,34 @@ public class HocPhanController {
         hocPhanRepository.deleteById(id);
         return "redirect:/hoc-phan";
     }
+
+    // Xuất danh sách học phần
+    @GetMapping("/xuat-danh-sach")
+    public String xuatDanhSachHocPhan(Model model) {
+        try {
+            List<HocPhan> hocPhanList = hocPhanRepository.findAll();
+            model.addAttribute("hocPhanList", hocPhanList);
+            // Thống kê tổng thể
+            model.addAttribute("tongHocPhan", hocPhanList.size());
+            model.addAttribute("tongTinChi", calculateTotalCredits(hocPhanList));
+            model.addAttribute("tongTietHoc", calculateTotalLessons(hocPhanList));
+            return "hoc_phan_export";
+        } catch (Exception e) {
+            return "redirect:/hoc-phan";
+        }
+    }
+
+    // tính tổng số tín chỉ
+    private int calculateTotalCredits(List<HocPhan> hocPhanList) {
+        return hocPhanList.stream()
+                .mapToInt(HocPhan::getSoTinChi)
+                .sum();
+    }
+
+    //  tính tổng số tiết học
+    private int calculateTotalLessons(List<HocPhan> hocPhanList) {
+        return hocPhanList.stream()
+                .mapToInt(hp -> hp.getSoTietLyThuyet() + hp.getSoTietThucHanh() + hp.getSoTietThucTap())
+                .sum();
+    }
 }

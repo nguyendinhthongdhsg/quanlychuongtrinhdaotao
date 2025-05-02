@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Phiếu báo cáo danh sách học phần</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @media print {
+            .no-print {
+                display: none;
+            }
+            body {
+                font-size: 12pt;
+            }
+            .page-header {
+                border-bottom: 1px solid #ddd;
+                margin-bottom: 20px;
+                padding-bottom: 10px;
+            }
+            .page-footer {
+                border-top: 1px solid #ddd;
+                margin-top: 20px;
+                padding-top: 10px;
+                font-style: italic;
+            }
+            .table {
+                border-collapse: collapse;
+                width: 100%;
+            }
+            .table th, .table td {
+                border: 1px solid #333;
+                padding: 5px;
+            }
+            .stats-box {
+                background-color: #f8f9fa !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                border-left: 4px solid #0d6efd !important;
+            }
+        }
+        .stats-box {
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-left: 4px solid #0d6efd;
+        }
+        .table-hover tbody tr:hover {
+            background-color: rgba(0, 123, 255, 0.1);
+        }
+        .text-muted-custom {
+            color: #6c757d;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-4">
+    <!-- Nút print và quay lại -->
+    <div class="d-flex justify-content-end mb-3 no-print">
+        <button onclick="window.print()" class="btn btn-primary me-2">
+            <i class="fas fa-print"></i> In báo cáo
+        </button>
+        <a th:href="@{/hoc-phan}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Quay lại
+        </a>
+    </div>
+
+    <!-- Header -->
+    <div class="page-header text-center">
+        <h2>PHIẾU BÁO CÁO DANH SÁCH HỌC PHẦN</h2>
+        <p class="text-muted">Xuất ngày: <span th:text="${#dates.format(#dates.createNow(), 'dd/MM/yyyy')}"></span></p>
+    </div>
+
+    <!-- Phần thống kê tổng thể -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="stats-box">
+                <h5>Tổng số học phần</h5>
+                <h3 th:text="${tongHocPhan != null ? tongHocPhan : 0}">0</h3>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stats-box">
+                <h5>Tổng số tín chỉ</h5>
+                <h3 th:text="${tongTinChi != null ? tongTinChi : 0}">0</h3>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stats-box">
+                <h5>Tổng số tiết học</h5>
+                <h3 th:text="${tongTietHoc != null ? tongTietHoc : 0}">0</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bảng chi tiết học phần -->
+    <h4 class="mb-3">Danh sách chi tiết học phần</h4>
+    <div th:if="${hocPhanList == null || hocPhanList.isEmpty()}">
+        <div class="alert alert-info">
+            Không có học phần nào trong danh sách.
+        </div>
+    </div>
+
+    <table class="table table-striped table-bordered table-hover" th:if="${hocPhanList != null && !hocPhanList.isEmpty()}">
+        <thead class="table-dark">
+        <tr>
+            <th>STT</th>
+            <th>Mã học phần</th>
+            <th>Tên học phần</th>
+            <th>Số tín chỉ</th>
+            <th>Số tiết LT</th>
+            <th>Số tiết TH</th>
+            <th>Số tiết TT</th>
+            <th>Tổng tiết</th>
+            <th>Học phần tiên quyết</th>
+            <th>Hệ số</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="hocPhan, stat : ${hocPhanList}">
+            <td th:text="${stat.index + 1}"></td>
+            <td th:text="${hocPhan.maHp}"></td>
+            <td th:text="${hocPhan.tenHp}"></td>
+            <td th:text="${hocPhan.soTinChi}"></td>
+            <td th:text="${hocPhan.soTietLyThuyet}"></td>
+            <td th:text="${hocPhan.soTietThucHanh}"></td>
+            <td th:text="${hocPhan.soTietThucTap}"></td>
+            <td th:text="${hocPhan.soTietLyThuyet + hocPhan.soTietThucHanh + hocPhan.soTietThucTap}"></td>
+            <td th:text="${hocPhan.hocPhanTienQuyet != null ? hocPhan.hocPhanTienQuyet : '-'}"></td>
+            <td th:text="${hocPhan.heSo}"></td>
+        </tr>
+        </tbody>
+        <tfoot class="table-secondary">
+        <tr>
+            <td colspan="3" class="text-end"><strong>Tổng cộng:</strong></td>
+            <td th:text="${tongTinChi}"></td>
+            <td colspan="3"></td>
+            <td th:text="${tongTietHoc}"></td>
+            <td colspan="2"></td>
+        </tr>
+        </tfoot>
+    </table>
+
+    <!-- Footer -->
+    <div class="page-footer text-center mt-5">
+        <p>Báo cáo được tạo tự động từ hệ thống Quản lý Chương trình Đào tạo</p>
+        <p class="small text-muted">© Trường Đại học - Phòng Đào tạo</p>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
