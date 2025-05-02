@@ -1,7 +1,9 @@
 
 package com.example.quanlychuongtrinhdaotao.controller;
 
+import com.example.quanlychuongtrinhdaotao.entity.HocPhanTrongKeHoach;
 import com.example.quanlychuongtrinhdaotao.entity.KeHoachDayHoc;
+import com.example.quanlychuongtrinhdaotao.service.HocPhanTrongKeHoachService;
 import com.example.quanlychuongtrinhdaotao.service.KeHoachDayHocService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,24 +18,34 @@ import java.util.Set;
 public class KeHoachDayHocController {
 
     private final KeHoachDayHocService keHoachDayHocService;
+    private final HocPhanTrongKeHoachService hocPhanTrongKeHoachService;
 
-    public KeHoachDayHocController(KeHoachDayHocService keHoachDayHocService) {
+    public KeHoachDayHocController(KeHoachDayHocService keHoachDayHocService, HocPhanTrongKeHoachService hocPhanTrongKeHoachService) {
         this.keHoachDayHocService = keHoachDayHocService;
+        this.hocPhanTrongKeHoachService = hocPhanTrongKeHoachService;
     }
 
-    // Hiển thị danh sách kế hoạch dạy học
+    // Hiển thị danh sách và search kế hoạch dạy học
     @GetMapping
-    public String getAll(Model model) {
+    public String getAll(
+            @RequestParam(required = false) String search,
+            Model model
+    ) {
         try {
-            List<KeHoachDayHoc> keHoachList = keHoachDayHocService.getAllKeHoach();
+            List<KeHoachDayHoc> keHoachList;
+            if (search != null && !search.isEmpty()) {
+                keHoachList = keHoachDayHocService.searchKeHoach(search);
+            } else {
+                keHoachList = keHoachDayHocService.getAllKeHoach();
+            }
             model.addAttribute("keHoachList", keHoachList);
+            model.addAttribute("searchKeyword", search);
         } catch (Exception e) {
             model.addAttribute("keHoachList", List.of());
             model.addAttribute("errorMessage", "Không thể lấy danh sách kế hoạch: " + e.getMessage());
         }
         return "kehoach_list";
     }
-
     // Hiển thị form thêm kế hoạch
     @GetMapping("/add")
     public String showAddForm(Model model) {
@@ -67,17 +79,31 @@ public class KeHoachDayHocController {
     }
 
     @GetMapping("/detail/{id}")
-    public String showDetail(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
+    public String showDetail(
+            @PathVariable Long id,
+            @RequestParam(required = false) String search,
+            Model model,
+            RedirectAttributes redirectAttributes
+    ) {
         try {
             KeHoachDayHoc keHoach = keHoachDayHocService.getKeHoachById(id);
+            List<HocPhanTrongKeHoach> hocPhanList;
+            if (search != null && !search.trim().isEmpty()) {
+                // Sử dụng phương thức search đã tạo
+                hocPhanList = hocPhanTrongKeHoachService.searchInKeHoach(search, id);
+            } else {
+                hocPhanList = keHoach.getHocPhanTrongKeHoachList();
+            }
             model.addAttribute("keHoach", keHoach);
-            model.addAttribute("hocPhanList", keHoach.getHocPhanTrongKeHoachList());
+            model.addAttribute("hocPhanList", hocPhanList);
+            model.addAttribute("searchKeyword", search);
             return "kehoach_detail";
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/ke-hoach-day-hoc";
         }
     }
+
 
     // Xử lý cập nhật kế hoạch
     @PostMapping("/edit/{id}")

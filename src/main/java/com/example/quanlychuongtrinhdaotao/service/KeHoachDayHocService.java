@@ -33,7 +33,10 @@ public class KeHoachDayHocService {
     public void saveKeHoach(KeHoachDayHoc keHoach) {
         repository.save(keHoach);
     }
-
+    //search
+    public List<KeHoachDayHoc> searchKeHoach(String keyword) {
+        return repository.searchKeHoach(keyword);
+    }
     public void deleteKeHoach(Long id) {
         if (!repository.existsById(id)) {
             throw new IllegalArgumentException("Không tìm thấy kế hoạch với ID: " + id);

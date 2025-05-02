@@ -45,6 +45,7 @@ public class PhanCongGiangDayController {
         return "phancong_list";
     }
 
+
     @GetMapping("/add/{hocPhanId}")
     @PreAuthorize("hasRole('ROLE_admin')")
     public String form(@PathVariable Long hocPhanId, Model model) {

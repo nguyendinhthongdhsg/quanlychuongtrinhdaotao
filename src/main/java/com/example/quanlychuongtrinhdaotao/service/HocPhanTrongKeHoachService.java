@@ -39,4 +39,7 @@ public class HocPhanTrongKeHoachService {
         return repository.findAllByKeHoachDayHoc_Id(keHoachId);
     }
 
+    public List<HocPhanTrongKeHoach> searchInKeHoach(String keyword, Long keHoachId) {
+        return repository.searchInKeHoach(keyword, keHoachId);
+    }
 }
