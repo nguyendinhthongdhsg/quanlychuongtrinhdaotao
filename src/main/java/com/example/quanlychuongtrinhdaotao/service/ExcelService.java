@@ -7,6 +7,7 @@ import com.example.quanlychuongtrinhdaotao.repository.UserRepository;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,6 +18,10 @@ import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
 @Service
 public class ExcelService {
 
@@ -25,6 +30,11 @@ public class ExcelService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    private static final Logger logger = LoggerFactory.getLogger(ExcelService.class);
 
     // Export giảng viên ra Excel
     public ByteArrayInputStream exportGiangVienToExcel(List<GiangVien> giangVienList) throws IOException {
@@ -184,11 +194,12 @@ public class ExcelService {
     public List<GiangVien> importGiangVienFromExcel(MultipartFile file) throws IOException {
         List<GiangVien> importedGiangViens = new ArrayList<>();
         List<String> errors = new ArrayList<>();
+        List<String> successMessages = new ArrayList<>();
 
         try (InputStream is = file.getInputStream();
              Workbook workbook = WorkbookFactory.create(is)) {
 
-            Sheet sheet = workbook.getSheetAt(0); // Lấy sheet đầu tiên
+            Sheet sheet = workbook.getSheetAt(0);
             Iterator<Row> rows = sheet.iterator();
 
             // Bỏ qua header
@@ -211,14 +222,13 @@ public class ExcelService {
                     String trinhDo = getCellValueAsString(currentRow.getCell(6));
                     String trangThai = getCellValueAsString(currentRow.getCell(7));
                     String username = getCellValueAsString(currentRow.getCell(8));
-
-                    // Validate dữ liệu cơ bản
+                    String email = getCellValueAsString(currentRow.getCell(9));
+                    // Validate
                     if (maGV.isEmpty() || hoTen.isEmpty() || boMon.isEmpty() ||
                             khoa.isEmpty() || trangThai.isEmpty()) {
                         errors.add("Dòng " + rowNumber + ": Thiếu thông tin bắt buộc");
                         continue;
                     }
-
                     // Kiểm tra xem mã GV đã tồn tại chưa
                     GiangVien existingGV = giangVienRepository.findByMaGV(maGV);
                     GiangVien giangVien;
@@ -231,8 +241,7 @@ public class ExcelService {
                         giangVien = new GiangVien();
                         giangVien.setMaGV(maGV);
                     }
-
-                    // Cập nhật thông tin
+                    // Cập nhật thông tin giảng viên
                     giangVien.setHoTen(hoTen);
                     giangVien.setBoMon(boMon);
                     giangVien.setKhoa(khoa);
@@ -240,25 +249,47 @@ public class ExcelService {
                     giangVien.setTrinhDo(trinhDo);
                     giangVien.setTrangThai(trangThai);
 
-                    // Xử lý user nếu có
-                    Optional<User> optionalUser = userRepository.findByUsername(username);
-                    if (optionalUser.isPresent()) {
-                        giangVien.setUser(optionalUser.get());
-                    } else {
-                        errors.add("Dòng " + rowNumber + ": Không tìm thấy user với username " + username);
+                    // Xử lý user
+                    if (!username.isEmpty()) {
+                        Optional<User> optionalUser = userRepository.findByUsername(username);
+                        User user;
+
+                        if (optionalUser.isPresent()) {
+                            user = optionalUser.get();
+                            successMessages.add("Dòng " + rowNumber + ": Sử dụng user đã tồn tại - " + username);
+                        } else {
+                            user = new User();
+                            user.setUsername(username);
+                            user.setPassword(passwordEncoder.encode("123456"));
+                            user.setEmail(email.isEmpty() ? username + "@example.com" : email);
+                            user.setHoTen(hoTen);
+                            user.setVaiTro("giangvien");
+                            user.setTrangThai(true);
+                            user.setNamSinh(1980);
+                            userRepository.save(user);
+                            successMessages.add("Dòng " + rowNumber + ": Đã tạo user mới - " + username);
+                        }
+                        // Liên kết user với giảng viên
+                        giangVien.setUser(user);
                     }
+
                     importedGiangViens.add(giangVien);
 
                 } catch (Exception e) {
                     errors.add("Dòng " + rowNumber + ": Lỗi xử lý - " + e.getMessage());
                 }
             }
-
-            // Lưu các giảng viên hợp lệ vào database
+            // Lưu các giảng viên hợp lệ vô database
             if (!importedGiangViens.isEmpty()) {
                 giangVienRepository.saveAll(importedGiangViens);
             }
-
+            // Log các thông báo
+            if (!errors.isEmpty()) {
+                logger.error("Lỗi khi import: " + String.join(", ", errors));
+            }
+            if (!successMessages.isEmpty()) {
+                logger.info("Import thành công: " + String.join(", ", successMessages));
+            }
             return importedGiangViens;
         }
     }
