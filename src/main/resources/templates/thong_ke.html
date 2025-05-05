@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Thống kê</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --sidebar-width: 280px;
+            --primary-color: #4e73df;
+            --secondary-color: #f8f9fc;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fb;
+        }
+
+        /* Sidebar styling */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            background: linear-gradient(180deg, var(--primary-color) 0%, #224abe 100%);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        }
+
+        .sidebar a {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 12px 20px;
+            text-decoration: none;
+            display: block;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar a:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+            border-left: 3px solid white;
+        }
+
+        .sidebar a.active {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+            border-left: 3px solid white;
+        }
+
+        /* Main content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            width: calc(100% - var(--sidebar-width));
+            min-height: 100vh;
+        }
+
+        /* Card styling */
+        .stat-card {
+            border-radius: 10px;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+            transition: transform 0.3s;
+            border: none;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card .card-body {
+            padding: 1.5rem;
+        }
+
+        .stat-card .card-title {
+            font-size: 1rem;
+            color: #6c757d;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .card-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #5a5c69;
+        }
+
+        .stat-card .card-icon {
+            font-size: 2rem;
+            opacity: 0.3;
+            position: absolute;
+            right: 1.5rem;
+            top: 1.5rem;
+        }
+
+        /* Custom colors for cards */
+        .card-primary {
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .card-success {
+            border-left: 4px solid #1cc88a;
+        }
+
+        .card-danger {
+            border-left: 4px solid #e74a3b;
+        }
+
+        .card-info {
+            border-left: 4px solid #36b9cc;
+        }
+
+        .card-warning {
+            border-left: 4px solid #f6c23e;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <nav class="col-md-3 col-lg-2 sidebar">
+            <a href="/" class="text-center mb-4"><h5>📊 Quản lý CTĐT</h5></a>
+            <a sec:authorize="hasRole('ROLE_admin') or hasRole('ROLE_truongkhoa') or hasRole('ROLE_giangvien')" href="/thong-tin-chung">Chương trình đào tạo</a>
+            <a sec:authorize="hasRole('ROLE_admin') or hasRole('ROLE_truongkhoa') or hasRole('ROLE_giangvien')" href="/hoc-phan">Học phần</a>
+            <a sec:authorize="hasRole('ROLE_admin') or hasRole('ROLE_truongkhoa') or hasRole('ROLE_giangvien')" href="/de-cuong-chi-tiet">Đề cương</a>
+            <a sec:authorize="hasRole('ROLE_admin') or hasRole('ROLE_truongkhoa') or hasRole('ROLE_giangvien')" href="/ke-hoach-day-hoc">Kế hoạch dạy học</a>
+            <a sec:authorize="hasRole('ROLE_admin') or hasRole('ROLE_truongkhoa') or hasRole('ROLE_giangvien')" href="/thong-ke" class="active">Thống kê</a>
+            <a sec:authorize="hasRole('ROLE_admin') or hasRole('ROLE_truongkhoa') or hasRole('ROLE_giangvien')" href="/giangvien">Danh mục giảng viên</a>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="col-md-9 col-lg-10 p-0 main-content">
+            <!-- Top navbar -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom px-4">
+                <div class="container-fluid">
+                    <button class="btn btn-link me-2" onclick="history.back()">
+                        <i class="fas fa-arrow-left"></i> Quay lại
+                    </button>
+                    <span class="navbar-text ms-auto me-3">
+                        👤 <strong th:text="${#authentication.name}">user</strong>
+                    </span>
+                    <form th:action="@{/logout}" method="post">
+                        <button type="submit" class="btn btn-outline-danger btn-sm">Đăng xuất</button>
+                    </form>
+                </div>
+            </nav>
+
+            <!-- Page content -->
+            <main class="p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="mb-0">Thống kê hệ thống</h2>
+                </div>
+
+                <!-- Thống kê tổng thể về giảng viên -->
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                        <h6 class="m-0 font-weight-bold text-primary">Thống kê giảng viên</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="stat-card card-primary h-100 py-2">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="card-title text-uppercase font-weight-bold">Tổng giảng viên</div>
+                                                <div class="card-value mb-0" th:text="${tongGiangVien}">0</div>
+                                            </div>
+                                                <a href="/giangvien">Xem chi tiết</a>
+                                            <div class="col-auto">
+                                                <i class="fas fa-users card-icon"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="stat-card card-success h-100 py-2">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="card-title text-uppercase font-weight-bold">Đang làm việc</div>
+                                                <div class="card-value mb-0" th:text="${tongGiangVienDangLamViec}">0</div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fas fa-user-check card-icon"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="stat-card card-danger h-100 py-2">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="card-title text-uppercase font-weight-bold">Đã nghỉ việc</div>
+                                                <div class="card-value mb-0" th:text="${tongGiangVienNghiViec}">0</div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fas fa-user-slash card-icon"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Thống kê tổng thể về kế hoạch -->
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                        <h6 class="m-0 font-weight-bold text-primary">Thống kê kế hoạch giảng dạy</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="stat-card card-primary h-100 py-2">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="card-title text-uppercase font-weight-bold">Tổng học phần</div>
+                                                <div class="card-value mb-0" th:text="${tongHocPhan}">0</div>
+                                            </div>
+                                            <a href="/ke-hoach-day-hoc">Xem chi tiết</a>
+                                            <div class="col-auto">
+                                                <i class="fas fa-book card-icon"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="stat-card card-success h-100 py-2">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="card-title text-uppercase font-weight-bold">Giảng viên tham gia</div>
+                                                <div class="card-value mb-0" th:text="${tongGiangVienInKeHoach}">0</div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fas fa-chalkboard-teacher card-icon"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="stat-card card-warning h-100 py-2">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="card-title text-uppercase font-weight-bold">Tổng tiết dạy</div>
+                                                <div class="card-value mb-0" th:text="${tongTietGiangDay}">0</div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fas fa-clock card-icon"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="stat-card card-info h-100 py-2">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="card-title text-uppercase font-weight-bold">Tiết/GV trung bình</div>
+                                                <div class="card-value mb-0" th:text="${tongGiangVienInKeHoach > 0 ? (tongTietGiangDay/tongGiangVienInKeHoach) : '0'}">0</div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fas fa-calculator card-icon"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Thống kê tổng thể về học phần -->
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                        <h6 class="m-0 font-weight-bold text-primary">Thống kê học phần</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <!-- Tổng học phần -->
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="stat-card card-primary h-100 py-2">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="card-title text-uppercase font-weight-bold">Tổng học phần</div>
+                                                <div class="card-value mb-0" th:text="${tongHocPhanAll}">0</div>
+                                                <a href="/hoc-phan">Xem chi tiết</a>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fas fa-book card-icon"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tổng tín chỉ -->
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="stat-card card-info h-100 py-2">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="card-title text-uppercase font-weight-bold">Tổng tín chỉ</div>
+                                                <div class="card-value mb-0" th:text="${tongTinChi}">0</div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fas fa-graduation-cap card-icon"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tổng tiết lý thuyết -->
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="stat-card card-warning h-100 py-2">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="card-title text-uppercase font-weight-bold">Tiết lý thuyết</div>
+                                                <div class="card-value mb-0" th:text="${tongTietLyThuyet}">0</div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fas fa-chalkboard card-icon"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tổng tiết thực hành -->
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="stat-card card-success h-100 py-2">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="card-title text-uppercase font-weight-bold">Tiết thực hành</div>
+                                                <div class="card-value mb-0" th:text="${tongTietThucHanh}">0</div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fas fa-flask card-icon"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-4">
+                    <button class="btn btn-secondary" onclick="history.back()">
+                        <i class="fas fa-arrow-left me-2"></i> Quay lại
+                    </button>
+                </div>
+            </main>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+
+</script>
+</body>
+</html>

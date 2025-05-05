@@ -241,14 +241,12 @@ public class ExcelService {
                         giangVien = new GiangVien();
                         giangVien.setMaGV(maGV);
                     }
-                    // Cập nhật thông tin giảng viên
                     giangVien.setHoTen(hoTen);
                     giangVien.setBoMon(boMon);
                     giangVien.setKhoa(khoa);
                     giangVien.setChuyenMon(chuyenMon);
                     giangVien.setTrinhDo(trinhDo);
                     giangVien.setTrangThai(trangThai);
-
                     // Xử lý user
                     if (!username.isEmpty()) {
                         Optional<User> optionalUser = userRepository.findByUsername(username);
@@ -279,7 +277,7 @@ public class ExcelService {
                     errors.add("Dòng " + rowNumber + ": Lỗi xử lý - " + e.getMessage());
                 }
             }
-            // Lưu các giảng viên hợp lệ vô database
+            // lưu gv vào db
             if (!importedGiangViens.isEmpty()) {
                 giangVienRepository.saveAll(importedGiangViens);
             }
