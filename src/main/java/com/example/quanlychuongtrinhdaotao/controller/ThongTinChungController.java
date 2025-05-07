@@ -74,6 +74,92 @@ public class ThongTinChungController {
 
         // Lấy danh sách học phần trong chương trình
         List<HocPhan_ChuongTrinh> hocPhanList = hocPhanChuongTrinhRepository.findHocPhan_ChuongTrinhsByThongTinChung_Id(id);
+        List<HocPhan_ChuongTrinh> hocPhanDaiCuongBatBuoc = new ArrayList<>();
+        List<HocPhan_ChuongTrinh> hocPhanDaiCuongTuChon = new ArrayList<>();
+        List<HocPhan_ChuongTrinh> hocPhanCoSoNganhBatBuoc = new ArrayList<>();
+        List<HocPhan_ChuongTrinh> hocPhanCoSoNganhTuChon = new ArrayList<>();
+        List<HocPhan_ChuongTrinh> hocPhanKienThucNganhBatBuoc = new ArrayList<>();
+        List<HocPhan_ChuongTrinh> hocPhanKienThucNganhTuChon = new ArrayList<>();
+        List<HocPhan_ChuongTrinh> hocPhanChuyenNganhBatBuoc = new ArrayList<>();
+        List<HocPhan_ChuongTrinh> hocPhanChuyenNganhTuChon = new ArrayList<>();
+
+        Integer tcDaiCuongBatBuoc = 0;
+        Integer tcDaiCuongTuChon = 0;
+        Integer tcCoSoNganhBatBuoc = 0;
+        Integer tcCoSoNganhTuChon = 0;
+        Integer tcKienThucNganhBatBuoc = 0;
+        Integer tcKienThucNganhTuChon = 0;
+        Integer tcChuyenNganhBatBuoc = 0;
+        Integer tcChuyenNganhTuChon = 0;
+
+        Integer tcToiThieuDaiCuongBatBuoc = 0;
+        Integer tcToiThieuDaiCuongTuChon = 0;
+        Integer tcToiThieuCoSoNganhBatBuoc = 0;
+        Integer tcToiThieuCoSoNganhTuChon = 0;
+        Integer tcToiThieuKienThucNganhBatBuoc = 0;
+        Integer tcToiThieuKienThucNganhTuChon = 0;
+        Integer tcToiThieuChuyenNganhBatBuoc = 0;
+        Integer tcToiThieuChuyenNganhTuChon = 0;
+
+        for(KhungChuongTrinh khungChuongTrinh : khungList) {
+            if(khungChuongTrinh.getNhomKienThuc().getTenNhom().equals("Kiến thức cơ sở của ngành")) {
+                tcToiThieuCoSoNganhBatBuoc = khungChuongTrinh.getSoTinChiBatBuocToiThieu();
+                tcToiThieuCoSoNganhTuChon = khungChuongTrinh.getSoTinChiTuChonToiThieu();
+            } else if(khungChuongTrinh.getNhomKienThuc().getTenNhom().equals("Kiến thức ngành")) {
+                tcToiThieuKienThucNganhBatBuoc = khungChuongTrinh.getSoTinChiBatBuocToiThieu();
+                tcToiThieuKienThucNganhTuChon = khungChuongTrinh.getSoTinChiTuChonToiThieu();
+            } else if(khungChuongTrinh.getNhomKienThuc().getTenNhom().equals("Kiến thức chuyên ngành")) {
+                tcToiThieuChuyenNganhBatBuoc = khungChuongTrinh.getSoTinChiBatBuocToiThieu();
+                tcToiThieuChuyenNganhTuChon = khungChuongTrinh.getSoTinChiTuChonToiThieu();
+            }
+        }
+
+        int count = 1;
+        for(HocPhan_ChuongTrinh hp : hocPhanList) {
+            hp.setStt(count);
+            count++;
+            if(hp.getKhungChuongTrinh().getNhomKienThuc().getTenNhom().equals("Kiến thức Giáo dục thể chất và Giáo dục quốc phòng và an ninh") ||
+                    hp.getKhungChuongTrinh().getNhomKienThuc().getTenNhom().equals("Kiến thức Ngoại ngữ") ||
+                    hp.getKhungChuongTrinh().getNhomKienThuc().getTenNhom().equals("Kiến thức Lý luận chính trị") ||
+                    hp.getKhungChuongTrinh().getNhomKienThuc().getTenNhom().equals("Kiến thức giáo dục đại cương khác")) {
+                if(hp.getBatBuoc() == 1) {
+                    hocPhanDaiCuongBatBuoc.add(hp);
+                    if(!hp.getKhungChuongTrinh().getNhomKienThuc().getTenNhom().equals("Kiến thức Giáo dục thể chất và Giáo dục quốc phòng và an ninh")) {
+                        tcDaiCuongBatBuoc += hp.getHocPhan().getSoTinChi();
+                    }
+                } else {
+                    hocPhanDaiCuongTuChon.add(hp);
+                    tcDaiCuongTuChon += hp.getHocPhan().getSoTinChi();
+                }
+            } else if(hp.getKhungChuongTrinh().getNhomKienThuc().getTenNhom().equals("Kiến thức cơ sở của ngành")) {
+                if(hp.getBatBuoc() == 1) {
+                    hocPhanCoSoNganhBatBuoc.add(hp);
+                    tcCoSoNganhBatBuoc += hp.getHocPhan().getSoTinChi();
+                } else {
+                    hocPhanCoSoNganhTuChon.add(hp);
+                    tcCoSoNganhTuChon += hp.getHocPhan().getSoTinChi();
+                }
+            } else if(hp.getKhungChuongTrinh().getNhomKienThuc().getTenNhom().equals("Kiến thức ngành") ||
+                    hp.getKhungChuongTrinh().getNhomKienThuc().getTenNhom().equals("Khóa luận tốt nghiệp") ||
+                    hp.getKhungChuongTrinh().getNhomKienThuc().getTenNhom().equals("Các học phần thay thế khóa luận")) {
+                if(hp.getBatBuoc() == 1) {
+                    hocPhanKienThucNganhBatBuoc.add(hp);
+                    tcKienThucNganhBatBuoc += hp.getHocPhan().getSoTinChi();
+                } else {
+                    hocPhanKienThucNganhTuChon.add(hp);
+                    tcKienThucNganhTuChon += hp.getHocPhan().getSoTinChi();
+                }
+            } else {
+                if(hp.getBatBuoc() == 1) {
+                    hocPhanChuyenNganhBatBuoc.add(hp);
+                    tcChuyenNganhBatBuoc += hp.getHocPhan().getSoTinChi();
+                } else {
+                    hocPhanChuyenNganhTuChon.add(hp);
+                    tcChuyenNganhTuChon += hp.getHocPhan().getSoTinChi();
+                }
+            }
+        }
+
 
         if (data.isPresent()) {
             model.addAttribute("ThongTinChung", data.get());
@@ -85,7 +171,30 @@ public class ThongTinChungController {
             model.addAttribute("tongSoTinChiBatBuoc", tongSoTinChiBatBuoc);
             model.addAttribute("tongSoTinChiTuChon", tongSoTinChiTuChon);
             model.addAttribute("tongSoTinChiTichLuyToiThieu", tongSoTinChiTichLuyToiThieu);
-            model.addAttribute("HocPhanList", hocPhanList);
+            model.addAttribute("hocPhanDaiCuongBatBuoc", hocPhanDaiCuongBatBuoc);
+            model.addAttribute("hocPhanDaiCuongTuChon", hocPhanDaiCuongTuChon);
+            model.addAttribute("hocPhanCoSoNganhBatBuoc", hocPhanCoSoNganhBatBuoc);
+            model.addAttribute("hocPhanCoSoNganhTuChon", hocPhanCoSoNganhTuChon);
+            model.addAttribute("hocPhanKienThucNganhBatBuoc", hocPhanKienThucNganhBatBuoc);
+            model.addAttribute("hocPhanKienThucNganhTuChon", hocPhanKienThucNganhTuChon);
+            model.addAttribute("hocPhanChuyenNganhBatBuoc", hocPhanChuyenNganhBatBuoc);
+            model.addAttribute("hocPhanChuyenNganhTuChon", hocPhanChuyenNganhTuChon);
+            model.addAttribute("tcDaiCuongBatBuoc", tcDaiCuongBatBuoc);
+            model.addAttribute("tcDaiCuongTuChon", tcDaiCuongTuChon);
+            model.addAttribute("tcCoSoNganhBatBuoc", tcCoSoNganhBatBuoc);
+            model.addAttribute("tcCoSoNganhTuChon", tcCoSoNganhTuChon);
+            model.addAttribute("tcKienThucNganhBatBuoc", tcKienThucNganhBatBuoc);
+            model.addAttribute("tcKienThucNganhTuChon", tcKienThucNganhTuChon);
+            model.addAttribute("tcChuyenNganhBatBuoc", tcChuyenNganhBatBuoc);
+            model.addAttribute("tcChuyenNganhTuChon", tcChuyenNganhTuChon);
+            model.addAttribute("tcToiThieuDaiCuongBatBuoc", tcToiThieuDaiCuongBatBuoc);
+            model.addAttribute("tcToiThieuDaiCuongTuChon", tcToiThieuDaiCuongTuChon);
+            model.addAttribute("tcToiThieuCoSoNganhBatBuoc", tcToiThieuCoSoNganhBatBuoc);
+            model.addAttribute("tcToiThieuCoSoNganhTuChon", tcToiThieuCoSoNganhTuChon);
+            model.addAttribute("tcToiThieuKienThucNganhBatBuoc", tcToiThieuKienThucNganhBatBuoc);
+            model.addAttribute("tcToiThieuKienThucNganhTuChon", tcToiThieuKienThucNganhTuChon);
+            model.addAttribute("tcToiThieuChuyenNganhBatBuoc", tcToiThieuChuyenNganhBatBuoc);
+            model.addAttribute("tcToiThieuChuyenNganhTuChon", tcToiThieuChuyenNganhTuChon);
         }
 
         return "thong_tin_chung_detail";

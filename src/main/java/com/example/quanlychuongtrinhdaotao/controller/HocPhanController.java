@@ -3,6 +3,8 @@ package com.example.quanlychuongtrinhdaotao.controller;
 import com.example.quanlychuongtrinhdaotao.entity.HocPhan;
 import com.example.quanlychuongtrinhdaotao.repository.HocPhanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,9 +21,14 @@ public class HocPhanController {
 
     // Hiển thị danh sách học phần
     @GetMapping
-    public String getAll(Model model) {
-        List<HocPhan> hocPhanList = hocPhanRepository.findAll();
-        model.addAttribute("hocPhanList", hocPhanList);
+    public String getAll(Model model,
+                         @RequestParam(defaultValue = "0") int page,
+                         @RequestParam(defaultValue = "10") int size) {
+        Page<HocPhan> hocPhanPage = hocPhanRepository.findAll(PageRequest.of(page, size));
+        model.addAttribute("hocPhanList", hocPhanPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", hocPhanPage.getTotalPages());
+
         return "hoc_phan_list";
     }
 

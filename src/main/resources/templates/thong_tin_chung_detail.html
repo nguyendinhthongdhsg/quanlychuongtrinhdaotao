@@ -47,52 +47,52 @@
                     <table class="table table-bordered">
                         <tbody>
                         <tr>
-                            <td>1</td>
+                            <td class="text-center align-middle">1</td>
                             <td>Tên gọi</td>
                             <td th:text="${ThongTinChung.tenCtdt}"></td>
                         </tr>
                         <tr>
-                            <td>2</td>
+                            <td class="text-center align-middle">2</td>
                             <td>Ngành</td>
                             <td th:text="${ThongTinChung.nganh}"></td>
                         </tr>
                         <tr>
-                            <td>3</td>
+                            <td class="text-center align-middle">3</td>
                             <td>Mã ngành</td>
                             <td th:text="${ThongTinChung.maNganh}"></td>
                         </tr>
                         <tr>
-                            <td>4</td>
+                            <td class="text-center align-middle">4</td>
                             <td>Khoa quản lý</td>
                             <td th:text="${ThongTinChung.khoaQuanLy}"></td>
                         </tr>
                         <tr>
-                            <td>5</td>
+                            <td class="text-center align-middle">5</td>
                             <td>Hệ đào tạo</td>
                             <td th:text="${ThongTinChung.heDaoTao}"></td>
                         </tr>
                         <tr>
-                            <td>6</td>
+                            <td class="text-center align-middle">6</td>
                             <td>Trình độ</td>
                             <td th:text="${ThongTinChung.trinhDo}"></td>
                         </tr>
                         <tr>
-                            <td>7</td>
+                            <td class="text-center align-middle">7</td>
                             <td>Tổng tín chỉ</td>
                             <td th:text="${ThongTinChung.tongTinChi}"></td>
                         </tr>
                         <tr>
-                            <td>8</td>
+                            <td class="text-center align-middle">8</td>
                             <td>Thời gian đào tạo</td>
                             <td th:text="${ThongTinChung.thoiGianDaoTao}"></td>
                         </tr>
                         <tr>
-                            <td>9</td>
+                            <td class="text-center align-middle">9</td>
                             <td>Năm ban hành</td>
                             <td th:text="${ThongTinChung.namBanHanh}"></td>
                         </tr>
                         <tr>
-                            <td>10</td>
+                            <td class="text-center align-middle">10</td>
                             <td>Trạng thái</td>
                             <td th:text="${ThongTinChung.trangThai == 1 ? 'Đang hoạt động' : 'Ngừng hoạt động'}"></td>
                         </tr>
@@ -104,18 +104,18 @@
                     <table class="table table-bordered">
                         <thead>
                         <tr>
-                            <th rowspan="2" colspan="2">Khối kiến thức</th>
-                            <th colspan="2">Số tín chỉ</th>
+                            <th rowspan="2" colspan="2" class="text-center align-middle">Khối kiến thức</th>
+                            <th colspan="2" class="text-center align-middle">Số tín chỉ</th>
                         </tr>
                         <tr>
-                            <th>Bắt buộc</th>
-                            <th>Tự chọn</th>
+                            <th class="text-center align-middle">Bắt buộc</th>
+                            <th class="text-center align-middle">Tự chọn</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr>
-                            <td>I</td>
-                            <td>Khối kiến thức giáo dục đại cương</td>
+                            <td class="text-center align-middle fw-bold">I</td>
+                            <td class="fw-bold">Khối kiến thức giáo dục đại cương</td>
                             <td th:text="${soTinChiKhoiGiaoDucDaiCuongBatBuoc}"></td>
                             <td th:text="${soTinChiKhoiGiaoDucDaiCuongTuChon}"></td>
                         </tr>
@@ -123,8 +123,8 @@
                         <th:block th:each="k, iterStat : ${KhungList}">
                             <!-- Chỉ hiển thị dòng 'II...' ở chỉ số mong muốn -->
                             <tr th:if="${iterStat.index == 4}">
-                                <td>II</td>
-                                <td>Khối kiến thức giáo dục chuyên nghiệp</td>
+                                <td class="text-center align-middle fw-bold">II</td>
+                                <td class="fw-bold">Khối kiến thức giáo dục chuyên nghiệp</td>
                                 <td th:text="${soTinChiKhoiGiaoDucChuyenNghiepBatBuoc}"></td>
                                 <td th:text="${soTinChiKhoiGiaoDucChuyenNghiepTuChon}"></td>
                             </tr>
@@ -138,15 +138,15 @@
                             </tr>
                         </th:block>
                         <tr>
-                            <td colspan="2">Tổng</td>
+                            <td colspan="2" class="text-end align-middle fw-bold">Tổng</td>
                             <td th:text="${tongSoTinChiBatBuoc}"></td>
                             <td th:text="${tongSoTinChiTuChon}"></td>
                         </tr>
                         <tr>
-                            <td colspan="2">Số tín chỉ tối thiểu phải tích lũy
+                            <td colspan="2" class="text-end align-middle fw-bold">Số tín chỉ tối thiểu phải tích lũy
                                 (không tính số tín chỉ Giáo dục thể chất và Giáo dục quốc phòng và an ninh)
                             </td>
-                            <td colspan="2" th:text="${tongSoTinChiTichLuyToiThieu}"></td>
+                            <td colspan="2" class="text-center align-middle" th:text="${tongSoTinChiTichLuyToiThieu}"></td>
                         </tr>
                         </tbody>
                     </table>
@@ -155,30 +155,162 @@
                     <p><strong>Bảng 3. Danh sách học phần</strong></p>
                     <table class="table table-bordered table-hover">
                         <thead>
-                        <tr>
-                            <th>STT</th>
-                            <th>Mã học phần</th>
-                            <th>Tên học phần</th>
-                            <th>Số TC</th>
-                            <th>Lý thuyết</th>
-                            <th>Thực hành</th>
-                            <th>Thực tập</th>
-                            <th>Hệ số</th>
-                            <th>Bắt buộc</th>
-                        </tr>
+                            <tr>
+                                <th rowspan="2" class="text-center align-middle">TT</th>
+                                <th rowspan="2" class="text-center align-middle">Mã HP</th>
+                                <th rowspan="2" class="text-center align-middle">Tên học phần</th>
+                                <th rowspan="2" class="text-center align-middle">Số tín chỉ</th>
+                                <th colspan="4" class="text-center align-middle">Số tiết dạy học</th>
+                                <th rowspan="2" class="text-center align-middle">Hệ số học phần</th>
+                            </tr>
+                            <tr>
+                                <th class="text-center align-middle">Lý thuyết</th>
+                                <th class="text-center align-middle">Thực hành</th>
+                                <th class="text-center align-middle">Thực tập</th>
+                                <th class="text-center align-middle">Cộng</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="hp, iterStat : ${HocPhanList}">
-                            <td th:text="${iterStat.count}"></td>
-                            <td th:text="${hp.hocPhan.maHp}"></td>
-                            <td th:text="${hp.hocPhan.tenHp}"></td>
-                            <td th:text="${hp.hocPhan.soTinChi}"></td>
-                            <td th:text="${hp.hocPhan.soTietLyThuyet}"></td>
-                            <td th:text="${hp.hocPhan.soTietThucHanh}"></td>
-                            <td th:text="${hp.hocPhan.soTietThucTap}"></td>
-                            <td th:text="${hp.hocPhan.heSo}"></td>
-                            <td th:text="${hp.batBuoc == 1 ? 'Có' : 'Không'}"></td>
-                        </tr>
+                            <tr>
+                                <td colspan="3" class="fw-bold">I. Khối kiến thức giáo dục đại cương không tính GDTC và GDQPAN</td>
+                                <td class="text-center align-middle fw-bold" th:text="${soTinChiKhoiGiaoDucDaiCuongBatBuoc} + '/' + ${tcDaiCuongBatBuoc}"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="fw-bold">Các học phần bắt buộc</td>
+                                <td class="text-center align-middle fw-bold" th:text="${soTinChiKhoiGiaoDucDaiCuongBatBuoc} + '/' + ${tcDaiCuongBatBuoc}"></td>
+                            </tr>
+                            <tr th:each="hp, iterStat : ${hocPhanDaiCuongBatBuoc}">
+                                <td class="text-center align-middle" th:text="${hp.getStt()}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.maHp}"></td>
+                                <td th:text="${hp.hocPhan.tenHp}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.soTinChi}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.soTietLyThuyet}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.soTietThucHanh}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.soTietThucTap}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.soTietLyThuyet + hp.hocPhan.soTietThucHanh + hp.hocPhan.soTietThucTap}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.heSo}"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="fw-bold">Các học phần tự chọn</td>
+                                <td class="text-center align-middle fw-bold" th:text="'2/' + ${tcDaiCuongTuChon}"></td>
+                            </tr>
+                            <tr th:each="hp, iterStat : ${hocPhanDaiCuongTuChon}">
+                                <td class="text-center align-middle" th:text="${hp.getStt()}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.maHp}"></td>
+                                <td th:text="${hp.hocPhan.tenHp}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.soTinChi}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.soTietLyThuyet}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.soTietThucHanh}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.soTietThucTap}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.soTietLyThuyet + hp.hocPhan.soTietThucHanh + hp.hocPhan.soTietThucTap}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.heSo}"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="fw-bold">II. Khối kiến thức chuyên nghiệp</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="fw-bold">Kiến thức cơ sở ngành</td>
+                                <td class="text-center align-middle fw-bold" th:text="${tcToiThieuCoSoNganhBatBuoc + tcToiThieuCoSoNganhTuChon} + '/' + ${tcCoSoNganhBatBuoc + tcCoSoNganhTuChon}"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="fw-bold">Các học phần bắt buộc</td>
+                                <td class="text-center align-middle fw-bold" th:text="${tcToiThieuCoSoNganhBatBuoc} + '/' + ${tcCoSoNganhBatBuoc}"></td>
+                            </tr>
+                            <tr th:each="hp, iterStat : ${hocPhanCoSoNganhBatBuoc}">
+                                <td class="text-center align-middle" th:text="${hp.getStt()}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.maHp}"></td>
+                                <td th:text="${hp.hocPhan.tenHp}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.soTinChi}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.soTietLyThuyet}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.soTietThucHanh}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.soTietThucTap}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.soTietLyThuyet + hp.hocPhan.soTietThucHanh + hp.hocPhan.soTietThucTap}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.heSo}"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="fw-bold">Các học phần tự chọn</td>
+                                <td class="text-center align-middle fw-bold" th:text="${tcToiThieuCoSoNganhTuChon} + '/' + ${tcCoSoNganhTuChon}"></td>
+                            </tr>
+                            <tr th:each="hp, iterStat : ${hocPhanCoSoNganhTuChon}">
+                                <td class="text-center align-middle" th:text="${hp.getStt()}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.maHp}"></td>
+                                <td th:text="${hp.hocPhan.tenHp}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.soTinChi}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.soTietLyThuyet}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.soTietThucHanh}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.soTietThucTap}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.soTietLyThuyet + hp.hocPhan.soTietThucHanh + hp.hocPhan.soTietThucTap}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.heSo}"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="fw-bold">Kiến thức ngành</td>
+                                <td class="text-center align-middle fw-bold" th:text="${tcToiThieuKienThucNganhBatBuoc + tcToiThieuKienThucNganhTuChon} + '/' + ${tcKienThucNganhBatBuoc + tcKienThucNganhTuChon}"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="fw-bold">Các học phần bắt buộc</td>
+                                <td class="text-center align-middle fw-bold" th:text="${tcToiThieuKienThucNganhBatBuoc} + '/' + ${tcKienThucNganhBatBuoc}"></td>
+                            </tr>
+                            <tr th:each="hp, iterStat : ${hocPhanKienThucNganhBatBuoc}">
+                                <td class="text-center align-middle" th:text="${hp.getStt()}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.maHp}"></td>
+                                <td th:text="${hp.hocPhan.tenHp}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.soTinChi}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.soTietLyThuyet}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.soTietThucHanh}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.soTietThucTap}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.soTietLyThuyet + hp.hocPhan.soTietThucHanh + hp.hocPhan.soTietThucTap}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.heSo}"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="fw-bold">Các học phần tự chọn</td>
+                                <td class="text-center align-middle fw-bold" th:text="${tcToiThieuKienThucNganhTuChon} + '/' + ${tcKienThucNganhTuChon}"></td>
+                            </tr>
+                            <tr th:each="hp, iterStat : ${hocPhanKienThucNganhTuChon}">
+                                <td class="text-center align-middle" th:text="${hp.getStt()}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.maHp}"></td>
+                                <td th:text="${hp.hocPhan.tenHp}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.soTinChi}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.soTietLyThuyet}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.soTietThucHanh}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.soTietThucTap}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.soTietLyThuyet + hp.hocPhan.soTietThucHanh + hp.hocPhan.soTietThucTap}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.heSo}"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="fw-bold">Kiến thức chuyên ngành</td>
+                                <td class="text-center align-middle fw-bold" th:text="${tcToiThieuKienThucNganhBatBuoc+ tcToiThieuChuyenNganhTuChon} + '/' + ${tcKienThucNganhBatBuoc + tcChuyenNganhTuChon}"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="fw-bold">Các học phần bắt buộc</td>
+                                <td class="text-center align-middle fw-bold" th:text="${tcToiThieuChuyenNganhBatBuoc} + '/' + ${tcChuyenNganhBatBuoc}"></td>
+                            </tr>
+                            <tr th:each="hp, iterStat : ${hocPhanChuyenNganhBatBuoc}">
+                                <td class="text-center align-middle" th:text="${hp.getStt()}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.maHp}"></td>
+                                <td th:text="${hp.hocPhan.tenHp}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.soTinChi}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.soTietLyThuyet}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.soTietThucHanh}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.soTietThucTap}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.soTietLyThuyet + hp.hocPhan.soTietThucHanh + hp.hocPhan.soTietThucTap}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.heSo}"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="fw-bold">Các học phần tự chọn</td>
+                                <td class="text-center align-middle fw-bold" th:text="${tcToiThieuChuyenNganhTuChon} + '/' + ${tcChuyenNganhTuChon}"></td>
+                            </tr>
+                            <tr th:each="hp, iterStat : ${hocPhanChuyenNganhTuChon}">
+                                <td class="text-center align-middle" th:text="${hp.getStt()}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.maHp}"></td>
+                                <td th:text="${hp.hocPhan.tenHp}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.soTinChi}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.soTietLyThuyet}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.soTietThucHanh}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.soTietThucTap}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.soTietLyThuyet + hp.hocPhan.soTietThucHanh + hp.hocPhan.soTietThucTap}"></td>
+                                <td class="text-center align-middle" th:text="${hp.hocPhan.heSo}"></td>
+                            </tr>
                         </tbody>
                     </table>
 

@@ -27,4 +27,6 @@ public class HocPhan_ChuongTrinh {
 
     @Column(name = "batbuoc")
     private Integer batBuoc;
+
+    private Integer stt;
 }
