@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!-- Duyệt từng học kỳ -->
+<th:block th:each="entry : ${hocPhanByHocKy}">
+    <h3>Học kỳ [[${entry.key}]]</h3>
+    <ul>
+        <li th:each="hp : ${entry.value}">
+            [[${hp.tenHocPhan}]] - [[${hp.soTC}]] tín chỉ
+        </li>
+    </ul>
+</th:block>
+</body>
+</html>

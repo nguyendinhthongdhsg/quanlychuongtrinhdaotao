@@ -73,6 +73,8 @@ public class ThongKeController {
         model.addAttribute("tongHocPhan", keHoachList.stream().mapToInt(kh -> kh.getHocPhanTrongKeHoachList().size()).sum());
         model.addAttribute("tongGiangVienInKeHoach", totalGiangVienInKeHoach);
         model.addAttribute("tongTietGiangDay", totalTeachingHours);
+
+
         return "thong_ke";
     }
 }

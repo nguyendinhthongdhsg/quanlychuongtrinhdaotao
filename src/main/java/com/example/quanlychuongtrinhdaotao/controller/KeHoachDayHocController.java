@@ -3,8 +3,10 @@ package com.example.quanlychuongtrinhdaotao.controller;
 
 import com.example.quanlychuongtrinhdaotao.entity.HocPhanTrongKeHoach;
 import com.example.quanlychuongtrinhdaotao.entity.KeHoachDayHoc;
+import com.example.quanlychuongtrinhdaotao.entity.ThongTinChung;
 import com.example.quanlychuongtrinhdaotao.service.HocPhanTrongKeHoachService;
 import com.example.quanlychuongtrinhdaotao.service.KeHoachDayHocService;
+import com.example.quanlychuongtrinhdaotao.service.ThongTinChungService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,10 +21,12 @@ public class KeHoachDayHocController {
 
     private final KeHoachDayHocService keHoachDayHocService;
     private final HocPhanTrongKeHoachService hocPhanTrongKeHoachService;
+    private final ThongTinChungService thongTinChungService;
 
-    public KeHoachDayHocController(KeHoachDayHocService keHoachDayHocService, HocPhanTrongKeHoachService hocPhanTrongKeHoachService) {
+    public KeHoachDayHocController(KeHoachDayHocService keHoachDayHocService, HocPhanTrongKeHoachService hocPhanTrongKeHoachService, ThongTinChungService thongTinChungService) {
         this.keHoachDayHocService = keHoachDayHocService;
         this.hocPhanTrongKeHoachService = hocPhanTrongKeHoachService;
+        this.thongTinChungService = thongTinChungService;
     }
 
     // Hiển thị danh sách và search kế hoạch dạy học
@@ -50,13 +54,18 @@ public class KeHoachDayHocController {
     @GetMapping("/add")
     public String showAddForm(Model model) {
         model.addAttribute("keHoach", new KeHoachDayHoc());
+        model.addAttribute("dsChuongTrinhDaoTao", thongTinChungService.getAllThongTinChung());
         return "kehoach_form";
     }
 
     // Xử lý thêm kế hoạch
     @PostMapping("/add")
-    public String add(@ModelAttribute KeHoachDayHoc keHoach, RedirectAttributes redirectAttributes) {
+    public String add(@ModelAttribute KeHoachDayHoc keHoach, @RequestParam("thongTinChung.id") Integer thongTinChungId, RedirectAttributes redirectAttributes) {
         try {
+            ThongTinChung thongTinChung = thongTinChungService.getThongTinChungById(thongTinChungId)
+                    .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy chương trình đào tạo với ID: " + thongTinChungId));
+
+            keHoach.setThongTinChung(thongTinChung);
             keHoachDayHocService.saveKeHoach(keHoach);
             redirectAttributes.addFlashAttribute("successMessage", "Thêm kế hoạch thành công");
         } catch (IllegalArgumentException e) {
@@ -71,6 +80,7 @@ public class KeHoachDayHocController {
         try {
             KeHoachDayHoc keHoach = keHoachDayHocService.getKeHoachById(id);
             model.addAttribute("keHoach", keHoach);
+            model.addAttribute("dsChuongTrinhDaoTao", thongTinChungService.getAllThongTinChung());
             return "kehoach_form";
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
@@ -104,12 +114,17 @@ public class KeHoachDayHocController {
         }
     }
 
-
     // Xử lý cập nhật kế hoạch
     @PostMapping("/edit/{id}")
-    public String update(@PathVariable Long id, @ModelAttribute KeHoachDayHoc keHoach, RedirectAttributes redirectAttributes) {
+    public String update(@PathVariable Long id, @ModelAttribute KeHoachDayHoc keHoach,
+                         @RequestParam("thongTinChung.id") Integer thongTinChungId,
+                         RedirectAttributes redirectAttributes) {
         try {
+            ThongTinChung thongTinChung = thongTinChungService.getThongTinChungById(thongTinChungId)
+                    .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy chương trình đào tạo với ID: " + thongTinChungId));
+
             keHoach.setId(id);
+            keHoach.setThongTinChung(thongTinChung);
             keHoachDayHocService.saveKeHoach(keHoach);
             redirectAttributes.addFlashAttribute("successMessage", "Cập nhật kế hoạch thành công");
         } catch (IllegalArgumentException e) {
@@ -135,6 +150,13 @@ public class KeHoachDayHocController {
     public String xuatPhieuKeHoach(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
         try {
             KeHoachDayHoc keHoach = keHoachDayHocService.getKeHoachDetailForExport(id);
+
+            // Ensure heSo is loaded for each HocPhanTrongKeHoach
+            for (HocPhanTrongKeHoach hocPhan : keHoach.getHocPhanTrongKeHoachList()) {
+                // Log to verify heSo values are available
+                System.out.println("Học phần: " + hocPhan.getTenHocPhan() + " - Hệ số: " + hocPhan.getHeSo());
+            }
+
             model.addAttribute("keHoach", keHoach);
             model.addAttribute("hocPhanList", keHoach.getHocPhanTrongKeHoachList());
 
@@ -143,6 +165,16 @@ public class KeHoachDayHocController {
             model.addAttribute("tongGiangVien", keHoachDayHocService.countTotalGiangVienInKeHoach(keHoach));
             model.addAttribute("tongTietGiangDay", keHoachDayHocService.calculateTotalTeachingHours(keHoach));
 
+            // Calculate weighted total (with coefficient)
+            int tongTietCoHeSo = keHoach.getHocPhanTrongKeHoachList().stream()
+                    .mapToInt(hp -> {
+                        int tietTotal = hp.getTongSoTiet();
+                        float heSo = hp.getHeSo() != null ? hp.getHeSo() : 1.0f; // Default to 1.0 if null
+                        return Math.round(tietTotal * heSo);
+                    })
+                    .sum();
+            model.addAttribute("tongTietCoHeSo", tongTietCoHeSo);
+
             // Thống kê theo khoa
             model.addAttribute("getHocPhanByKhoa", (java.util.function.Function<String, List>)
                     khoa -> keHoachDayHocService.getHocPhanListByKhoa(keHoach, khoa));
@@ -150,6 +182,19 @@ public class KeHoachDayHocController {
                     khoa -> keHoachDayHocService.calculateTotalTeachingHoursByKhoa(keHoach, khoa));
             model.addAttribute("getGiangVienCountByKhoa", (java.util.function.Function<String, Integer>)
                     khoa -> keHoachDayHocService.countGiangVienByKhoa(keHoach, khoa));
+
+            // Helper function to calculate weighted hours by khoa
+            model.addAttribute("getTietGiangDayCoHeSoByKhoa", (java.util.function.Function<String, Integer>)
+                    khoa -> {
+                        List<HocPhanTrongKeHoach> hocPhanList = keHoachDayHocService.getHocPhanListByKhoa(keHoach, khoa);
+                        return hocPhanList.stream()
+                                .mapToInt(hp -> {
+                                    int tietTotal = hp.getTongSoTiet();
+                                    float heSo = hp.getHeSo() != null ? hp.getHeSo() : 1.0f; // Default to 1.0 if null
+                                    return Math.round(tietTotal * heSo);
+                                })
+                                .sum();
+                    });
 
             return "kehoach_export";
         } catch (IllegalArgumentException e) {

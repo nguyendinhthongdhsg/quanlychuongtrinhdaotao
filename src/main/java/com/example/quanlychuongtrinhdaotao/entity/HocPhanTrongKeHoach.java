@@ -39,6 +39,9 @@ public class HocPhanTrongKeHoach {
     @Column(name = "so_tietlt")
     private int soTietLT;
 
+    @Column(name = "he_so")
+    private Float heSo;
+
     @Column(name = "so_tietbt")
     private int soTietBT;
 

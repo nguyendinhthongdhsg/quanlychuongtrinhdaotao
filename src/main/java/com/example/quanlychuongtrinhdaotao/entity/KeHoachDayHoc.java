@@ -28,4 +28,7 @@ public class KeHoachDayHoc {
     @ToString.Exclude
     private List<HocPhanTrongKeHoach> hocPhanTrongKeHoachList;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ctdt_id", referencedColumnName = "id", nullable = false)
+    private ThongTinChung thongTinChung;
 }

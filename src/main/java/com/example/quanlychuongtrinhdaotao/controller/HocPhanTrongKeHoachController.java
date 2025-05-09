@@ -85,28 +85,25 @@ public class HocPhanTrongKeHoachController {
             return "hocphan_form";
         }
         try {
-            // Debug log
             System.out.println("KeHoachDayHoc: " + hocPhan.getKeHoachDayHoc());
             System.out.println("KeHoachDayHoc ID: " + (hocPhan.getKeHoachDayHoc() != null ? hocPhan.getKeHoachDayHoc().getId() : "null"));
 
             if (hocPhan.getKeHoachDayHoc() == null || hocPhan.getKeHoachDayHoc().getId() == null) {
                 throw new IllegalArgumentException("Kế hoạch dạy học chưa được xác định.");
             }
-
             KeHoachDayHoc keHoachDayHoc = keHoachService.getKeHoachById(hocPhan.getKeHoachDayHoc().getId());
             hocPhan.setKeHoachDayHoc(keHoachDayHoc);
-
             HocPhan hocPhanExist = hocPhanRepository.findById(hocPhan.getHocPhan().getId())
                     .orElseThrow(() -> new IllegalArgumentException("Học phần không tồn tại"));
-
-            // Cập nhật thông tin học phần
             hocPhan.setMaHocPhan(hocPhanExist.getMaHp());
             hocPhan.setTenHocPhan(hocPhanExist.getTenHp());
             hocPhan.setSoTC(hocPhanExist.getSoTinChi());
             hocPhan.setSoTietLT(hocPhanExist.getSoTietLyThuyet());
             hocPhan.setSoTietTH(hocPhanExist.getSoTietThucHanh());
             hocPhan.setTongSoTiet(hocPhan.getSoTietLT() + hocPhan.getSoTietTH());
-            // Lưu đối tượng
+            if (hocPhan.getHeSo() == null) {
+                hocPhan.setHeSo(1.0f);
+            }
             hocPhanService.save(hocPhan);
             redirectAttributes.addFlashAttribute("successMessage", "Thêm học phần thành công");
             return "redirect:/ke-hoach-day-hoc/detail/" + hocPhan.getKeHoachDayHoc().getId();
@@ -140,7 +137,6 @@ public class HocPhanTrongKeHoachController {
             model.addAttribute("errorMessage", "Dữ liệu học phần không hợp lệ");
             return "hocphan_form";
         }
-
         try {
             HocPhan selectedHocPhan = hocPhanRepository.findById(hocPhan.getHocPhan().getId())
                     .orElseThrow(() -> new IllegalArgumentException("Học phần không tồn tại"));
@@ -151,13 +147,17 @@ public class HocPhanTrongKeHoachController {
             hocPhan.setSoTietBT(0);
             hocPhan.setSoTietTH(selectedHocPhan.getSoTietThucHanh());
             hocPhan.setTongSoTiet(hocPhan.getSoTietLT() + hocPhan.getSoTietTH());
-
+            if (hocPhan.getHeSo() == null) {
+                HocPhanTrongKeHoach existingHocPhan = hocPhanService.getById(hocPhan.getId());
+                if (existingHocPhan != null && existingHocPhan.getHeSo() != null) {
+                    hocPhan.setHeSo(existingHocPhan.getHeSo());
+                } else {
+                    hocPhan.setHeSo(1.0f);
+                }
+            }
             hocPhanService.save(hocPhan);
-
-
             redirectAttributes.addFlashAttribute("successMessage", "Cập nhật học phần thành công");
             return "redirect:/ke-hoach-day-hoc/detail/" + hocPhan.getKeHoachDayHoc().getId();
-
         } catch (Exception e) {
             model.addAttribute("hocPhanList", hocPhanRepository.findAll());
             model.addAttribute("errorMessage", e.getMessage());
