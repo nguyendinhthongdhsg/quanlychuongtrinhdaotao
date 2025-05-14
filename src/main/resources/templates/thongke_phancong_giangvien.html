@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Thống kê phân công giảng viên</title>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 4px 8px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .nowrap {
+            white-space: nowrap;
+        }
+    </style>
+</head>
+
+<body>
+<h2>BẢNG PHÂN CÔNG CÔNG TÁC CỦA CÁN BỘ, GIẢNG VIÊN CƠ HỮU</h2>
+<button class="btn btn-link me-2" onclick="history.back()">
+    <i class="fas fa-arrow-left"></i> Quay lại
+</button>
+<table>
+    <thead>
+    <tr>
+        <th rowspan="2">STT</th>
+        <th rowspan="2">Mã CB</th>
+        <th rowspan="2">Họ và tên GV</th>
+        <th rowspan="2">Năm sinh</th>
+        <th rowspan="2">Chức danh, học vị</th>
+        <th colspan="7">Phân công giảng dạy</th>
+        <th rowspan="2">Tổng số tiết giảng dạy của GV</th>
+        <th rowspan="2">Công tác khác</th>
+        <th rowspan="2">Tổng CLC <br>(đã tính CVHT CLC)</th>
+        <th rowspan="2">Tổng số tiết công tác của GV</th>
+    </tr>
+    <tr>
+        <th>Tên học phần</th>
+        <th>Mã học phần</th>
+        <th>Số TC</th>
+        <th>Số tiết của HP</th>
+        <th>Số lượng lớp, nhóm</th>
+        <th>Giảng dạy ở học kì</th>
+        <th>Tổng số tiết</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="tk, stat : ${thongKeList}">
+        <td th:text="${stat.index + 1}"></td>
+        <td th:text="${tk.giangVien.maGV}"></td>
+        <td th:text="${tk.giangVien.hoTen}"></td>
+        <td th:text="${tk.giangVien.getUser().getNamSinh()}"></td>
+        <td th:text="${tk.giangVien.trinhDo}"></td>
+
+        <!-- Các danh sách học phần -->
+        <td>
+            <ul style="list-style:none; padding-left: 0;">
+                <li th:each="pc : ${tk.phanCongList}" th:text="${pc.hocPhanTrongKeHoach.tenHocPhan}"></li>
+            </ul>
+        </td>
+        <td>
+            <ul style="list-style:none; padding-left: 0;">
+                <li th:each="pc : ${tk.phanCongList}" th:text="${pc.hocPhanTrongKeHoach.maHocPhan}"></li>
+            </ul>
+        </td>
+        <td>
+            <ul style="list-style:none; padding-left: 0;">
+                <li th:each="pc : ${tk.phanCongList}" th:text="${pc.hocPhanTrongKeHoach.soTC}"></li>
+            </ul>
+        </td>
+        <td>
+            <ul style="list-style:none; padding-left: 0;">
+                <li th:each="pc : ${tk.phanCongList}" th:text="${pc.soTietThucHien}"></li>
+            </ul>
+        </td>
+        <td>
+            <ul style="list-style:none; padding-left: 0;">
+                <li th:each="pc : ${tk.phanCongList}" th:text="${pc.nhom}"></li>
+            </ul>
+        </td>
+        <td>
+            <ul style="list-style:none; padding-left: 0;">
+                <li th:each="pc : ${tk.phanCongList}" th:text="${pc.hocPhanTrongKeHoach.keHoachDayHoc.hocKy}"></li>
+            </ul>
+        </td>
+        <td>
+            <ul style="list-style:none; padding-left: 0;">
+                <li th:each="pc : ${tk.phanCongList}" th:text="${pc.soTietThucHien}"></li>
+            </ul>
+        </td>
+
+        <td th:text="${tk.tongTietGiangDay}"></td>
+        <td th:text="${tk.tongTietCongTacKhac}"></td>
+        <td th:text="${tk.tongSoTietCongTac}"></td>
+        <td th:text="${tk.tongSoTietCongTac}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+
+</html>
