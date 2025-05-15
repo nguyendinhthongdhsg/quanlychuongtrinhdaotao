@@ -20,11 +20,8 @@ public class KhungChuongTrinh {
     @JoinColumn(name = "nhom_kien_thuc_id", nullable = false)
     private NhomKienThuc nhomKienThuc;
 
-    @Column(name = "so_tin_chi_bat_buoc_toi_thieu", nullable = false)
-    private Integer soTinChiBatBuocToiThieu;
-
-    @Column(name = "so_tin_chi_tu_chon_toi_thieu", nullable = false)
-    private Integer soTinChiTuChonToiThieu;
+    private int soTinChiBatBuocToiThieu;
+    private int soTinChiTuChonToiThieu;
 
     // Constructors
     public KhungChuongTrinh() {}

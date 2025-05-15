@@ -55,23 +55,6 @@ public class ThongTinChungController {
         int tongSoTinChiTuChon = 0;
         int tongSoTinChiTichLuyToiThieu = 0;
 
-        for(KhungChuongTrinh kh : khungList) {
-            if(kh.getNhomKienThuc().getMaNhom().equals("NN") ||
-                    kh.getNhomKienThuc().getMaNhom().equals("LLCT") || kh.getNhomKienThuc().getMaNhom().equals("GDDCK")) {
-                soTinChiKhoiGiaoDucDaiCuongBatBuoc += kh.getSoTinChiBatBuocToiThieu();
-                soTinChiKhoiGiaoDucDaiCuongTuChon += kh.getSoTinChiTuChonToiThieu();
-                tongSoTinChiBatBuoc += kh.getSoTinChiBatBuocToiThieu();
-                tongSoTinChiTuChon += kh.getSoTinChiTuChonToiThieu();
-            } else if(!kh.getNhomKienThuc().getMaNhom().equals("QPAN")) {
-                soTinChiKhoiGiaoDucChuyenNghiepBatBuoc += kh.getSoTinChiBatBuocToiThieu();
-                soTinChiKhoiGiaoDucChuyenNghiepTuChon += kh.getSoTinChiTuChonToiThieu();
-                tongSoTinChiBatBuoc += kh.getSoTinChiBatBuocToiThieu();
-                tongSoTinChiTuChon += kh.getSoTinChiTuChonToiThieu();
-            }
-        }
-
-        tongSoTinChiTichLuyToiThieu = tongSoTinChiBatBuoc + tongSoTinChiTuChon;
-
         // Lấy danh sách học phần trong chương trình
         List<HocPhan_ChuongTrinh> hocPhanList = hocPhanChuongTrinhRepository.findHocPhan_ChuongTrinhsByThongTinChung_Id(id);
         List<HocPhan_ChuongTrinh> hocPhanDaiCuongBatBuoc = new ArrayList<>();
@@ -101,27 +84,16 @@ public class ThongTinChungController {
         Integer tcToiThieuChuyenNganhBatBuoc = 0;
         Integer tcToiThieuChuyenNganhTuChon = 0;
 
-        for(KhungChuongTrinh khungChuongTrinh : khungList) {
-            if(khungChuongTrinh.getNhomKienThuc().getTenNhom().equals("Kiến thức cơ sở của ngành")) {
-                tcToiThieuCoSoNganhBatBuoc = khungChuongTrinh.getSoTinChiBatBuocToiThieu();
-                tcToiThieuCoSoNganhTuChon = khungChuongTrinh.getSoTinChiTuChonToiThieu();
-            } else if(khungChuongTrinh.getNhomKienThuc().getTenNhom().equals("Kiến thức ngành")) {
-                tcToiThieuKienThucNganhBatBuoc = khungChuongTrinh.getSoTinChiBatBuocToiThieu();
-                tcToiThieuKienThucNganhTuChon = khungChuongTrinh.getSoTinChiTuChonToiThieu();
-            } else if(khungChuongTrinh.getNhomKienThuc().getTenNhom().equals("Kiến thức chuyên ngành")) {
-                tcToiThieuChuyenNganhBatBuoc = khungChuongTrinh.getSoTinChiBatBuocToiThieu();
-                tcToiThieuChuyenNganhTuChon = khungChuongTrinh.getSoTinChiTuChonToiThieu();
-            }
-        }
-
         int count = 1;
         for(HocPhan_ChuongTrinh hp : hocPhanList) {
             hp.setStt(count);
             count++;
+
             if(hp.getKhungChuongTrinh().getNhomKienThuc().getTenNhom().equals("Kiến thức Giáo dục thể chất và Giáo dục quốc phòng và an ninh") ||
                     hp.getKhungChuongTrinh().getNhomKienThuc().getTenNhom().equals("Kiến thức Ngoại ngữ") ||
                     hp.getKhungChuongTrinh().getNhomKienThuc().getTenNhom().equals("Kiến thức Lý luận chính trị") ||
                     hp.getKhungChuongTrinh().getNhomKienThuc().getTenNhom().equals("Kiến thức giáo dục đại cương khác")) {
+
                 if(hp.getBatBuoc() == 1) {
                     hocPhanDaiCuongBatBuoc.add(hp);
                     if(!hp.getKhungChuongTrinh().getNhomKienThuc().getTenNhom().equals("Kiến thức Giáo dục thể chất và Giáo dục quốc phòng và an ninh")) {
@@ -159,6 +131,36 @@ public class ThongTinChungController {
                 }
             }
         }
+
+        for(KhungChuongTrinh k : khungList) {
+            for(HocPhan_ChuongTrinh hp : hocPhanDaiCuongBatBuoc) {
+                if(hp.getKhungChuongTrinh().equals(k)) {
+                    if(hp.getBatBuoc() == 1) {
+                        k.setSoTinChiBatBuocToiThieu(k.getSoTinChiBatBuocToiThieu() + hp.getHocPhan().getSoTinChi());
+                    } else {
+                        k.setSoTinChiTuChonToiThieu(k.getSoTinChiTuChonToiThieu() + hp.getHocPhan().getSoTinChi());
+                    }
+                }
+            }
+        }
+
+        for (KhungChuongTrinh k : khungList) {
+            if(!k.getNhomKienThuc().getTenNhom().equals("Kiến thức Giáo dục thể chất và Giáo dục quốc phòng và an ninh") &&
+                    (k.getNhomKienThuc().getTenNhom().equals("Kiến thức Ngoại ngữ") ||
+                    k.getNhomKienThuc().getTenNhom().equals("Kiến thức Lý luận chính trị") ||
+                    k.getNhomKienThuc().getTenNhom().equals("Kiến thức giáo dục đại cương khác"))) {
+                soTinChiKhoiGiaoDucDaiCuongBatBuoc += k.getSoTinChiBatBuocToiThieu();
+                soTinChiKhoiGiaoDucDaiCuongTuChon += k.getSoTinChiTuChonToiThieu();
+            } else if(!k.getNhomKienThuc().getTenNhom().equals("Kiến thức Giáo dục thể chất và Giáo dục quốc phòng và an ninh")) {
+                soTinChiKhoiGiaoDucChuyenNghiepBatBuoc += k.getSoTinChiBatBuocToiThieu();
+                soTinChiKhoiGiaoDucChuyenNghiepTuChon += k.getSoTinChiTuChonToiThieu();
+
+            }
+        }
+        tongSoTinChiBatBuoc = soTinChiKhoiGiaoDucDaiCuongBatBuoc + soTinChiKhoiGiaoDucChuyenNghiepBatBuoc;
+        tongSoTinChiTuChon = soTinChiKhoiGiaoDucDaiCuongTuChon + soTinChiKhoiGiaoDucChuyenNghiepTuChon;
+
+        tongSoTinChiTichLuyToiThieu = tongSoTinChiBatBuoc + tongSoTinChiTuChon;
 
 
         if (data.isPresent()) {
@@ -267,18 +269,6 @@ public class ThongTinChungController {
             existing.setNamBanHanh(thongTinChung.getNamBanHanh());
             existing.setTrangThai(thongTinChung.getTrangThai());
             existing.setGioiThieu(thongTinChung.getGioiThieu());
-
-            // Cập nhật tín chỉ cho từng nhóm trong khung chương trình đào tạo
-            if (thongTinChung.getKhungChuongTrinhList() != null) {
-                for (int i = 0; i < thongTinChung.getKhungChuongTrinhList().size(); i++) {
-                    KhungChuongTrinh khung = thongTinChung.getKhungChuongTrinhList().get(i);
-                    KhungChuongTrinh existingKhung = existing.getKhungChuongTrinhList().get(i);
-
-                    // Cập nhật tín chỉ bắt buộc và tự chọn
-                    existingKhung.setSoTinChiBatBuocToiThieu(khung.getSoTinChiBatBuocToiThieu());
-                    existingKhung.setSoTinChiTuChonToiThieu(khung.getSoTinChiTuChonToiThieu());
-                }
-            }
 
             // Lưu lại thay đổi
             repository.save(existing);
